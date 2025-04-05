@@ -1,48 +1,41 @@
 ﻿using System;
 using GEMBusinessLogic;
 
-namespace GymEquipmentManagement
-{
-    class Program
-    {
+namespace GymEquipmentManagement{
+    class Program {
         static GEMProcess gemProcess = new GEMProcess();
 
-        static void Main()
-        {
-            while (true)
-            {
-                Console.Clear();
-                Console.WriteLine("\n===== GYM EQUIPMENT MANAGEMENT =====");
-                Console.WriteLine("1. Add Equipment");
-                Console.WriteLine("2. Update Equipment");
-                Console.WriteLine("3. Delete Equipment");
-                Console.WriteLine("4. View Equipment List");
-                Console.WriteLine("5. View History");
-                Console.WriteLine("6. Exit");
-                Console.Write("\nSelect an option: ");
+        static void Main(){
+            while (true) {
+            Console.Clear();
+            Console.WriteLine("\n===== GYM EQUIPMENT MANAGEMENT =====");
+            Console.WriteLine("1. Add Equipment");
+            Console.WriteLine("2. Update Equipment");
+            Console.WriteLine("3. Delete Equipment");
+            Console.WriteLine("4. View Equipment List");
+            Console.WriteLine("5. View History");
+            Console.WriteLine("6. Exit");
+            Console.Write("\nSelect an option: ");
 
-                string choice = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(choice))
-                {
-                    Console.WriteLine("Invalid choice! Please enter a number.");
-                    continue;
-                }
+            string choice = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(choice)){
+                Console.WriteLine("Invalid choice! Please enter a number.");
+                continue;
+            }
 
-                switch (choice)
-                {
-                    case "1": AddEquipment(); break;
-                    case "2": UpdateEquipment(); break;
-                    case "3": DeleteEquipment(); break;
-                    case "4": ViewEquipmentList(); break;
-                    case "5": ViewHistory(); break;
-                    case "6": return;
-                    default: Console.WriteLine("Invalid choice! Try again."); break;
-                }
+            switch (choice){
+                case "1": AddEquipment(); break;
+                case "2": UpdateEquipment(); break;
+                case "3": DeleteEquipment(); break;
+                case "4": ViewEquipmentList(); break;
+                case "5": ViewHistory(); break;
+                case "6": return;
+                default: Console.WriteLine("Invalid choice! Try again."); break;
+            }
             }
         }
 
-        static void AddEquipment()
-        {
+        static void AddEquipment(){
             Console.Write("Enter Equipment Name: ");
             string name = Console.ReadLine();
 
@@ -67,8 +60,7 @@ namespace GymEquipmentManagement
             Console.ReadKey();
         }
 
-        static void UpdateEquipment()
-        {
+        static void UpdateEquipment() {
             Console.Write("Enter Equipment ID to update: ");
             if (!int.TryParse(Console.ReadLine(), out int id))
             {
@@ -100,8 +92,7 @@ namespace GymEquipmentManagement
             Console.ReadKey();
         }
 
-        static void DeleteEquipment()
-        {
+        static void DeleteEquipment(){
             Console.Write("Enter Equipment ID to delete: ");
             if (!int.TryParse(Console.ReadLine(), out int id))
             {
@@ -118,16 +109,14 @@ namespace GymEquipmentManagement
             Console.ReadKey();
         }
 
-        static void ViewEquipmentList()
-        {
+        static void ViewEquipmentList() {
             Console.WriteLine("\n===== Equipment List =====");
             string equipmentList = gemProcess.ViewEquipmentList();
             Console.WriteLine(equipmentList);
             Console.ReadKey();
         }
 
-        static void ViewHistory()
-        {
+        static void ViewHistory() {
             Console.WriteLine("\n===== History =====");
             string history = gemProcess.ViewHistory();
             Console.WriteLine(history);
