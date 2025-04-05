@@ -3,11 +3,11 @@ using GEMBusinessLogic;
 
 namespace GymEquipmentManagement{
     class Program {
+
         static GEMProcess gemProcess = new GEMProcess();
 
         static void Main(){
             while (true) {
-            Console.Clear();
             Console.WriteLine("\n===== GYM EQUIPMENT MANAGEMENT =====");
             Console.WriteLine("1. Add Equipment");
             Console.WriteLine("2. Update Equipment");

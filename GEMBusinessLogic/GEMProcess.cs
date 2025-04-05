@@ -5,6 +5,7 @@ namespace GEMBusinessLogic {
     public class GEMProcess{
 
         public int idCounter = 1;
+
         public string equipmentData = "", historyData = "";
 
         public void AddEquipment(string name, string status, int quantity){
@@ -15,6 +16,7 @@ namespace GEMBusinessLogic {
         }
 
         public void UpdateEquipment(int id, string newName, string newStatus, int newQuantity) {
+
             string newData = "";
             bool updated = false;
             string[] lines = equipmentData.Split('\n');
@@ -45,6 +47,7 @@ namespace GEMBusinessLogic {
         }
 
         public bool DeleteEquipment(int id){
+
             string newData = "";
             bool deleted = false;
             int index = 0;

@@ -7,4 +7,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="GEMBusinessLogic\**" />
+    <EmbeddedResource Remove="GEMBusinessLogic\**" />
+    <None Remove="GEMBusinessLogic\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="GEMBusinessLogic\GEMBusinessLogic.csproj" />
+  </ItemGroup>
+
 </Project>
