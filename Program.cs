@@ -24,13 +24,19 @@ namespace GymEquipmentManagement{
             }
 
             switch (choice){
-                case "1": AddEquipment(); break;
-                case "2": UpdateEquipment(); break;
-                case "3": DeleteEquipment(); break;
-                case "4": ViewEquipmentList(); break;
-                case "5": ViewHistory(); break;
+                case "1": AddEquipment();
+                        break;
+                case "2": UpdateEquipment();
+                        break;
+                case "3": DeleteEquipment(); 
+                        break;
+                case "4": ViewEquipmentList(); 
+                        break;
+                case "5": ViewHistory(); 
+                        break;
                 case "6": return;
-                default: Console.WriteLine("Invalid choice! Try again."); break;
+                default: Console.WriteLine("Invalid choice! Try again."); 
+                        break;
             }
             }
         }
@@ -57,7 +63,7 @@ namespace GymEquipmentManagement{
             {
                 Console.WriteLine("Invalid quantity! Enter a positive number.");
             }
-            Console.ReadKey();
+           
         }
 
         static void UpdateEquipment() {
@@ -89,7 +95,7 @@ namespace GymEquipmentManagement{
             {
                 Console.WriteLine("Invalid quantity! Enter a positive number.");
             }
-            Console.ReadKey();
+           
         }
 
         static void DeleteEquipment(){
@@ -106,21 +112,21 @@ namespace GymEquipmentManagement{
             else
                 Console.WriteLine("Failed to delete. Equipment ID not found.");
 
-            Console.ReadKey();
+           
         }
 
         static void ViewEquipmentList() {
             Console.WriteLine("\n===== Equipment List =====");
             string equipmentList = gemProcess.ViewEquipmentList();
             Console.WriteLine(equipmentList);
-            Console.ReadKey();
+            
         }
 
         static void ViewHistory() {
             Console.WriteLine("\n===== History =====");
             string history = gemProcess.ViewHistory();
             Console.WriteLine(history);
-            Console.ReadKey();
+           
         }
     }
 }
