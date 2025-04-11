@@ -12,7 +12,31 @@ namespace GEMBusinessLogic
         {
             storage = new EquipStorage();
 
+            AddEquipment("Treadmill", "Working", 5);
+            AddEquipment("Dumbbell", "Working", 20);
+            AddEquipment("Bench Press", "Needs Repair", 3);
+            AddEquipment("Stationary Bike", "Working", 4);
+            AddEquipment("Rowing Machine", "Needs Repair", 2); 
+            AddEquipment("Pull-up Bar", "Working", 6);
+            AddEquipment("Leg Press", "Needs Repair", 2);
+            AddEquipment("Elliptical Trainer", "Working", 3);
         }
+
+        
+        public bool LogIn(string username, string password)
+        {
+            if (username == "admin" && password == "123456")
+            {
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid username or password.");
+                    return false;
+                }
+            }
+           
+
         public void AddEquipment(string name, string status, int quantity)
         {
             string entry = "ID: " + idCounter + "\nName: " + name + "\nStatus: " + status + "\nQuantity: " + quantity;
@@ -31,22 +55,24 @@ namespace GEMBusinessLogic
             for (int i = 0; i < newEntries.Length; i++)
             {
                 string entry = newEntries[i];
-                if (entry.Length > 0)
+                if (newEntries[i].StartsWith("ID: " + id))
                 {
-                    if (entry.Contains("ID: " + id))
-                    {
-                        string updatedEntry = "ID: " + id + "\nName: " + newName + "\nStatus: " + newStatus + "\nQuantity: " + newQuantity;
-                        newData += updatedEntry + "\n";
-                        storage.SetHistoryData(storage.GetHistoryData() + ("Updated: " + entry + " → " + updatedEntry + "\n"));
-                        updated = true;
-                    }
-                    else
-                    {
-                        newData += entry + "\n\n";
-                    }
+
+                    string oldEntry = newEntries[i] + "\n" + newEntries[i + 1] + "\n" + newEntries[i + 2] + "\n" + newEntries[i + 3];
+                    string updatedEntry = "ID: " + id + "\nName: " + newName + "\nStatus: " + newStatus + "\nQuantity: " + newQuantity;
+
+                    newData += updatedEntry + "\n";
+                    storage.SetHistoryData(storage.GetHistoryData() + ("Updated: " + entry + " → " + updatedEntry + "\n"));
+
+                    i += 3;
+
+                    updated = true;
+                }
+                else
+                {
+                    newData += newEntries[i] + "\n\n";
                 }
             }
-
             if (updated)
             {
                 storage.ReplaceEquipmentData(newData);
@@ -87,21 +113,26 @@ namespace GEMBusinessLogic
             return deleted;
         }
 
-
         public string SearchEquipment(int ID)
         {
             string[] entries = storage.GetEquipmentData().Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             string results = "";
+            bool matchFound = false;
 
-            foreach (string entry in entries)
+            for (int i = 0; i < entries.Length; i++)
             {
-                if (entry.Contains("ID: " + ID))
+                if (entries[i].StartsWith("ID: " + ID))
                 {
-                    results += entry + "\n";
+                    matchFound = true;
+                    results += entries[i] + "\n" + entries[i + 1] + "\n" + entries[i + 2] + "\n" + entries[i + 3] + "\n";
+                    break; 
                 }
             }
-            return results.Length > 0 ? results : "No equipment found with ID: " + ID;
+
+            return matchFound ? results : "No equipment found with ID: " + ID;
         }
+
+       
         public string ViewEquipmentList()
         {
             string data = storage.GetEquipmentData();

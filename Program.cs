@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using GEMBusinessLogic;
+using System.Data.SqlTypes;
 
 namespace GymEquipmentManagement{
     class Program {
@@ -10,6 +8,20 @@ namespace GymEquipmentManagement{
         static GEMProcess gemProcess = new GEMProcess();
 
         static void Main(){
+
+            Console.WriteLine("======== LOG IN ========\n"); 
+            Console.Write("Enter Username: ");  
+            string username = Console.ReadLine();
+
+            Console.Write("Enter Password: ");
+            string password = Console.ReadLine();
+
+            if (!gemProcess.LogIn(username, password))
+            {
+                Console.WriteLine("Invalid username or password.");
+                return;
+            }
+
             while (true) {
             Console.WriteLine("\n===== GYM EQUIPMENT MANAGEMENT =====");
             Console.WriteLine("1. Add Equipment");
@@ -47,13 +59,24 @@ namespace GymEquipmentManagement{
             }
         }
 
-        static void AddEquipment(){
+        static void AddEquipment()
+        {
             Console.Write("Enter Equipment Name: ");
             string name = Console.ReadLine();
 
             Console.Write("Enter Status (Working/Needs Repair): ");
             string status = Console.ReadLine();
-            if (status != "Working" && status != "Needs Repair")
+
+            string statusLower = status.ToLower();
+            if (statusLower == "working")
+            {
+                status = "Working";
+            }
+            else if (statusLower == "needs repair")
+            {
+                status = "Needs Repair";
+            }
+            else
             {
                 Console.WriteLine("Invalid status! Enter 'Working' or 'Needs Repair'.");
                 return;
@@ -69,10 +92,10 @@ namespace GymEquipmentManagement{
             {
                 Console.WriteLine("Invalid quantity! Enter a positive number.");
             }
-           
         }
 
         static void UpdateEquipment() {
+           
             Console.Write("Enter Equipment ID to update: ");
             if (!int.TryParse(Console.ReadLine(), out int id))
             {
@@ -85,7 +108,18 @@ namespace GymEquipmentManagement{
 
             Console.Write("Enter New Status (Working/Needs Repair): ");
             string newStatus = Console.ReadLine();
-            if (newStatus != "Working" && newStatus != "Needs Repair")
+
+            string statusLower = newStatus.ToLower();
+            if (statusLower != "working")
+            {
+                newStatus = "Working";
+
+            }
+            else if (statusLower == "needs repair")
+            {
+                newStatus = "Needs Repair";
+            }
+            else
             {
                 Console.WriteLine("Invalid status! Enter 'Working' or 'Needs Repair'.");
                 return;
@@ -114,22 +148,33 @@ namespace GymEquipmentManagement{
 
             bool deleted = gemProcess.DeleteEquipment(id);
             if (deleted)
+            {
                 Console.WriteLine("Equipment deleted successfully!");
+            }
             else
+            {
                 Console.WriteLine("Failed to delete. Equipment ID not found.");
-
+            }
            
         }
 
         static void SearchEquipment()
         {
             Console.Write("Enter Equipment ID to search: ");
-            int ID = int.Parse(Console.ReadLine());
-            Console.WriteLine("\n===== Search Result =====");
-            Console.WriteLine(gemProcess.SearchEquipment(ID));
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("Invalid ID! Enter a valid number.");
+                return;
+            }
 
+            string result = gemProcess.SearchEquipment(id);
+            Console.WriteLine("\n===== SEARCH RESULT =====\n");
+            Console.WriteLine(result);
         }
+
+       
         static void ViewEquipmentList() {
+
             Console.WriteLine("\n===== Equipment List =====");
             string equipmentList = gemProcess.ViewEquipmentList();
             Console.WriteLine(equipmentList);
