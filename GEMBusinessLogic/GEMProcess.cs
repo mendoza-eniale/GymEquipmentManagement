@@ -1,80 +1,74 @@
-﻿
-using System;
+﻿using System;
+using GEMDataAccess;
 
-namespace GEMBusinessLogic { 
-    public class GEMProcess{
+namespace GEMBusinessLogic
+{
+    public class GEMProcess
+    {
+        private EquipStorage storage;
+        private int idCounter = 1;
 
-        public int idCounter = 1;
+        public GEMProcess()
+        {
+            storage = new EquipStorage();
 
-        public string equipmentData = "", historyData = "";
-
-        public void AddEquipment(string name, string status, int quantity){
+        }
+        public void AddEquipment(string name, string status, int quantity)
+        {
             string entry = "ID: " + idCounter + "\nName: " + name + "\nStatus: " + status + "\nQuantity: " + quantity;
-            equipmentData += entry + "\n";
-            historyData += "Added: \n" + entry + "\n";
+            storage.SetEquipmentData(storage.GetEquipmentData() + entry + "\n");
+            storage.SetHistoryData(storage.GetHistoryData() + "Added: \n" + entry + "\n");
             idCounter++;
         }
 
-        public void UpdateEquipment(int id, string newName, string newStatus, int newQuantity) {
-
+        public void UpdateEquipment(int id, string newName, string newStatus, int newQuantity)
+        {
+            string data = storage.GetEquipmentData();
+            string[] newEntries = data.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             string newData = "";
-            bool updated = false;
-            string[] lines = equipmentData.Split('\n');
+            bool updated = true;
 
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < newEntries.Length; i++)
             {
-            string entry = lines[i];
-            if (entry.Length > 0)
-            {
-                if (entry.Contains("ID: " + id + ","))
+                string entry = newEntries[i];
+                if (entry.Length > 0)
                 {
-                    string updatedEntry = "ID: " + id + "\nName: " + newName + "\nStatus: " + newStatus + "\nQuantity: " + newQuantity;
-                    newData += updatedEntry + "\n";
-                    historyData += "Updated: " + entry + " → " + updatedEntry + "\n";
-                    updated = true;
-                }
-                else
-                {
-                    newData += entry + "\n";
+                    if (entry.Contains("ID: " + id))
+                    {
+                        string updatedEntry = "ID: " + id + "\nName: " + newName + "\nStatus: " + newStatus + "\nQuantity: " + newQuantity;
+                        newData += updatedEntry + "\n";
+                        storage.SetHistoryData(storage.GetHistoryData() + ("Updated: " + entry + " → " + updatedEntry + "\n"));
+                        updated = true;
+                    }
+                    else
+                    {
+                        newData += entry + "\n\n";
+                    }
                 }
             }
-        }
 
             if (updated)
-                equipmentData = newData;
+            {
+                storage.ReplaceEquipmentData(newData);
+            }
             else
-                historyData += "Update Failed: Equipment ID " + id + " not found.\n";
+            {
+                storage.SetHistoryData(storage.GetHistoryData() + "Update Failed: Equipment ID " + id + " not found.\n");
+            }
         }
-
-        public bool DeleteEquipment(int id){
-
+        public bool DeleteEquipment(int id)
+        {
+            string equipmentData = storage.GetEquipmentData();
+            string[] entries = equipmentData.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             string newData = "";
             bool deleted = false;
-            int index = 0;
 
-            while (index < equipmentData.Length){
 
-            int entryStart = index;
-            int entryEnd = equipmentData.IndexOf("ID: ", index + 1);
-            if (entryEnd == -1)
-                entryEnd = equipmentData.Length;
-
-            string entry = equipmentData.Substring(entryStart, entryEnd - entryStart).Trim();
-
-            int idIndex = entry.IndexOf("ID: ");
-            if (idIndex != -1)
+            foreach (string entry in entries)
             {
-                int newlineIndex = entry.IndexOf("\n", idIndex);
-                string idText = "";
-
-                for (int i = idIndex + 4; i < entry.Length && (entry[i] >= '0' && entry[i] <= '9'); i++)
+                if (entry.Contains("ID: " + id))
                 {
-                    idText += entry[i];
-                }
-
-                if (idText == id.ToString())
-                {
-                    historyData += "Deleted:\n" + entry + "\n";
+                    storage.SetHistoryData(storage.GetHistoryData() + "Deleted: " + entry + "\n");
                     deleted = true;
                 }
                 else
@@ -82,27 +76,42 @@ namespace GEMBusinessLogic {
                     newData += entry + "\n";
                 }
             }
-
-            index = entryEnd;
-            }
-
             if (deleted)
             {
-                equipmentData = newData;
+                storage.ReplaceEquipmentData(newData);
             }
             else
             {
-                historyData += "Delete Failed: Equipment ID " + id + " not found.\n";
+                storage.SetHistoryData(storage.GetHistoryData() + "Delete Failed: Equipment ID " + id + " not found.\n");
             }
             return deleted;
         }
 
-        public string ViewEquipmentList(){
-            return equipmentData.Length > 0 ? equipmentData : "No equipment available.";
+
+        public string SearchEquipment(int ID)
+        {
+            string[] entries = storage.GetEquipmentData().Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            string results = "";
+
+            foreach (string entry in entries)
+            {
+                if (entry.Contains("ID: " + ID))
+                {
+                    results += entry + "\n";
+                }
+            }
+            return results.Length > 0 ? results : "No equipment found with ID: " + ID;
+        }
+        public string ViewEquipmentList()
+        {
+            string data = storage.GetEquipmentData();
+            return string.IsNullOrWhiteSpace(data) ? "No equipment available." : data;
         }
 
-        public string ViewHistory() {
-            return historyData.Length > 0 ? historyData : "No history available.";
+        public string ViewHistory()
+        {
+            string data = storage.GetHistoryData();
+            return string.IsNullOrWhiteSpace(data) ? "No history available." : data;
         }
     }
 }

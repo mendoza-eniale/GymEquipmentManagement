@@ -1,4 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using GEMBusinessLogic;
 
 namespace GymEquipmentManagement{
@@ -14,7 +17,8 @@ namespace GymEquipmentManagement{
             Console.WriteLine("3. Delete Equipment");
             Console.WriteLine("4. View Equipment List");
             Console.WriteLine("5. View History");
-            Console.WriteLine("6. Exit");
+            Console.WriteLine("6. Search Equipment");
+            Console.WriteLine("7. Exit");
             Console.Write("\nSelect an option: ");
 
             string choice = Console.ReadLine();
@@ -34,7 +38,9 @@ namespace GymEquipmentManagement{
                         break;
                 case "5": ViewHistory(); 
                         break;
-                case "6": return;
+                case "6": SearchEquipment();
+                        break;
+                    case "7": return;
                 default: Console.WriteLine("Invalid choice! Try again."); 
                         break;
             }
@@ -115,6 +121,14 @@ namespace GymEquipmentManagement{
            
         }
 
+        static void SearchEquipment()
+        {
+            Console.Write("Enter Equipment ID to search: ");
+            int ID = int.Parse(Console.ReadLine());
+            Console.WriteLine("\n===== Search Result =====");
+            Console.WriteLine(gemProcess.SearchEquipment(ID));
+
+        }
         static void ViewEquipmentList() {
             Console.WriteLine("\n===== Equipment List =====");
             string equipmentList = gemProcess.ViewEquipmentList();
