@@ -1,6 +1,5 @@
 ﻿
 using GEMBusinessLogic;
-using System.Data.SqlTypes;
 
 namespace GymEquipmentManagement{
     class Program {
@@ -9,17 +8,27 @@ namespace GymEquipmentManagement{
 
         static void Main(){
 
-            Console.WriteLine("======== LOG IN ========\n"); 
-            Console.Write("Enter Username: ");  
-            string username = Console.ReadLine();
+            bool LoggedIn = false;
 
-            Console.Write("Enter Password: ");
-            string password = Console.ReadLine();
-
-            if (!gemProcess.LogIn(username, password))
+            while (!LoggedIn)
             {
-                Console.WriteLine("Invalid username or password.");
-                return;
+                Console.WriteLine("======== LOG IN ========\n");
+                Console.Write("Enter Username: ");
+                string username = Console.ReadLine();
+
+                Console.Write("Enter Password: ");
+                string password = Console.ReadLine();
+
+                LoggedIn = gemProcess.LogIn(username, password);
+               
+                if (!LoggedIn)
+                {
+                    Console.WriteLine("\nInvalid username or password.\n\n");
+                }
+                else
+                {
+                    return;
+                }
             }
 
             while (true) {

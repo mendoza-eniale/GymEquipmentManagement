@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using GEMDataAccess;
 
 namespace GEMBusinessLogic
@@ -31,10 +31,10 @@ namespace GEMBusinessLogic
                 }
                 else
                 {
-                    Console.WriteLine("Invalid username or password.");
-                    return false;
-                }
+                
+                return false;
             }
+        }
            
 
         public void AddEquipment(string name, string status, int quantity)

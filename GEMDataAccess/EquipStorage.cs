@@ -33,7 +33,7 @@ namespace GEMDataAccess
             }
             else
             {
-                return false;
+                return true;
             }
         }
     }
