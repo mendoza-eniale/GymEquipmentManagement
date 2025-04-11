@@ -9,10 +9,13 @@
 
   <ItemGroup>
     <Compile Remove="GEMBusinessLogic\**" />
+    <Compile Remove="GEMCommon\**" />
     <Compile Remove="GEMDataAccess\**" />
     <EmbeddedResource Remove="GEMBusinessLogic\**" />
+    <EmbeddedResource Remove="GEMCommon\**" />
     <EmbeddedResource Remove="GEMDataAccess\**" />
     <None Remove="GEMBusinessLogic\**" />
+    <None Remove="GEMCommon\**" />
     <None Remove="GEMDataAccess\**" />
   </ItemGroup>
 

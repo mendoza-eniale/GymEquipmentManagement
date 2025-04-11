@@ -4,14 +4,14 @@ using GEMBusinessLogic;
 namespace GymEquipmentManagement{
     class Program {
 
-        static GEMProcess gemProcess = new GEMProcess();
+        static GEMActions actions = new GEMActions();
+        static Login login = new Login();
 
         static void Main(){
 
             bool LoggedIn = false;
 
-            while (!LoggedIn)
-            {
+            while (!LoggedIn){
                 Console.WriteLine("======== LOG IN ========\n");
                 Console.Write("Enter Username: ");
                 string username = Console.ReadLine();
@@ -19,15 +19,14 @@ namespace GymEquipmentManagement{
                 Console.Write("Enter Password: ");
                 string password = Console.ReadLine();
 
-                LoggedIn = gemProcess.LogIn(username, password);
+                LoggedIn = login.LogIn(username, password);
                
-                if (!LoggedIn)
-                {
+                if (!LoggedIn){
                     Console.WriteLine("\nInvalid username or password.\n\n");
                 }
                 else
                 {
-                    return;
+                    Console.WriteLine("\nLogin successful!\n");
                 }
             }
 
@@ -40,7 +39,7 @@ namespace GymEquipmentManagement{
             Console.WriteLine("5. View History");
             Console.WriteLine("6. Search Equipment");
             Console.WriteLine("7. Exit");
-            Console.Write("\nSelect an option: ");
+                Console.Write("\nSelect an option: ");
 
             string choice = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(choice)){
@@ -68,8 +67,8 @@ namespace GymEquipmentManagement{
             }
         }
 
-        static void AddEquipment()
-        {
+        static void AddEquipment(){
+
             Console.Write("Enter Equipment Name: ");
             string name = Console.ReadLine();
 
@@ -94,7 +93,7 @@ namespace GymEquipmentManagement{
             Console.Write("Enter Quantity: ");
             if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
             {
-                gemProcess.AddEquipment(name, status, quantity);
+                actions.AddEquipment(name, status, quantity);
                 Console.WriteLine("Equipment added successfully!");
             }
             else
@@ -137,7 +136,7 @@ namespace GymEquipmentManagement{
             Console.Write("Enter New Quantity: ");
             if (int.TryParse(Console.ReadLine(), out int newQuantity) && newQuantity > 0)
             {
-                gemProcess.UpdateEquipment(id, newName, newStatus, newQuantity);
+                actions.UpdateEquipment(id, newName, newStatus, newQuantity);
                 Console.WriteLine("Equipment updated successfully!");
             }
             else
@@ -155,7 +154,7 @@ namespace GymEquipmentManagement{
                 return;
             }
 
-            bool deleted = gemProcess.DeleteEquipment(id);
+            bool deleted = actions.DeleteEquipment(id);
             if (deleted)
             {
                 Console.WriteLine("Equipment deleted successfully!");
@@ -167,8 +166,8 @@ namespace GymEquipmentManagement{
            
         }
 
-        static void SearchEquipment()
-        {
+        static void SearchEquipment() {
+
             Console.Write("Enter Equipment ID to search: ");
             if (!int.TryParse(Console.ReadLine(), out int id))
             {
@@ -176,7 +175,7 @@ namespace GymEquipmentManagement{
                 return;
             }
 
-            string result = gemProcess.SearchEquipment(id);
+            string result = actions.SearchEquipment(id);
             Console.WriteLine("\n===== SEARCH RESULT =====\n");
             Console.WriteLine(result);
         }
@@ -185,14 +184,14 @@ namespace GymEquipmentManagement{
         static void ViewEquipmentList() {
 
             Console.WriteLine("\n===== Equipment List =====");
-            string equipmentList = gemProcess.ViewEquipmentList();
+            string equipmentList = actions.ViewEquipmentList();
             Console.WriteLine(equipmentList);
             
         }
 
         static void ViewHistory() {
             Console.WriteLine("\n===== History =====");
-            string history = gemProcess.ViewHistory();
+            string history = actions.ViewHistory();
             Console.WriteLine(history);
            
         }

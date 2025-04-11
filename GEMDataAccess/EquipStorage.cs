@@ -1,40 +1,33 @@
-﻿
-using System;
+﻿using System;
 
-namespace GEMDataAccess
-{
-    public class EquipStorage
-    {
-        private string equipmentData = "";
-        private string historyData = "";
-        private string username = "admin";
-        private string password = "123456";
+namespace GEMDataAccess{
+    public class EquipStorage{
 
-        public string GetEquipmentData() => equipmentData;
-        public string GetHistoryData() => historyData;
+        private DataService dataService = new DataService();
+        private LoginService loginService = new LoginService();
 
-        public void SetEquipmentData(string data)
-        {
-            equipmentData = data + "\n\n";
+        public string GetEquipmentData(){
+            return dataService.GetEquipmentData();
         }
-        public void SetHistoryData(string data)
-        {
-            historyData = data + "\n";
+
+        public string GetHistoryData(){
+            return dataService.GetHistoryData();
         }
-        public void ReplaceEquipmentData(string newData)
-        {
-            equipmentData = newData;
+
+        public void SetEquipmentData(string data){
+            dataService.SetEquipmentData(data);
         }
-        public bool LogIn (string username, string password)
-        {
-            if (username == username && password == password)
-            {
-                return true;
-            }
-            else
-            {
-                return true;
-            }
+
+        public void SetHistoryData(string data) {
+            dataService.SetHistoryData(data);
+        }
+
+        public void ReplaceEquipmentData(string newData) {
+            dataService.ReplaceEquipmentData(newData);
+        }
+
+        public bool LogIn(string inputUsername, string inputPassword){
+            return loginService.LogIn(inputUsername, inputPassword);
         }
     }
 }
