@@ -5,14 +5,14 @@ namespace GEMBusinessLogic
 {
     public class Service
     {
-        private EquipStorage storage;
+        private GEMEquipStorage storage;
 
         public Service()
         {
-            storage = new EquipStorage();
+            storage = new GEMEquipStorage();
         }
 
-        public EquipStorage GetStorage()
+        public GEMEquipStorage GetStorage()
         {
             return storage;
         }

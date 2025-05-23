@@ -1,9 +1,9 @@
 ﻿using System;
 
 namespace GEMDataAccess{
-    public class EquipStorage{
+    public class GEMEquipStorage{
 
-        private DataService dataService = new DataService();
+        private GEMDataService dataService = new GEMDataService();
         private LoginService loginService = new LoginService();
 
         public string GetEquipmentData(){
@@ -14,7 +14,7 @@ namespace GEMDataAccess{
             return dataService.GetHistoryData();
         }
 
-        public void SetEquipmentData(string data){
+        public void SetEquipmentData(string data){  
             dataService.SetEquipmentData(data);
         }
 

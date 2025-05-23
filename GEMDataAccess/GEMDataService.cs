@@ -2,7 +2,7 @@
 
 namespace GEMDataAccess
 {
-    public class DataService
+    public class GEMDataService
     {
         private string equipmentData = "";
         private string historyData = "";
