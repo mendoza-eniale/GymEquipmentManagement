@@ -1,12 +1,15 @@
 ﻿using GEMDataAccess;
 using System;
 
-namespace GEMBusinessLogic{
-    public class GEMActions {
+namespace GEMBusinessLogic
+{
+    public class GEMActions
+    {
         private int idCounter = 1;
         private Service service;
 
-        public GEMActions(){
+        public GEMActions()
+        {
             service = new Service();
 
             AddEquipment("Treadmill", "Working", 5);
@@ -19,7 +22,8 @@ namespace GEMBusinessLogic{
             AddEquipment("Elliptical Trainer", "Working", 3);
         }
 
-        public void AddEquipment(string name, string status, int quantity){
+        public void AddEquipment(string name, string status, int quantity)
+        {
 
             string entry = "ID: " + idCounter + "\nName: " + name + "\nStatus: " + status + "\nQuantity: " + quantity;
             service.GetStorage().SetEquipmentData(service.GetStorage().GetEquipmentData() + entry + "\n");
@@ -27,16 +31,19 @@ namespace GEMBusinessLogic{
             idCounter++;
         }
 
-        public void UpdateEquipment(int id, string newName, string newStatus, int newQuantity) {
+        public void UpdateEquipment(int id, string newName, string newStatus, int newQuantity)
+        {
 
             string data = service.GetStorage().GetEquipmentData();
             string[] newEntries = data.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             string newData = "";
             bool updated = false;
 
-            for (int i = 0; i < newEntries.Length; i++) {
+            for (int i = 0; i < newEntries.Length; i++)
+            {
 
-                if (newEntries[i].StartsWith("ID: " + id)){
+                if (newEntries[i].StartsWith("ID: " + id))
+                {
                     string updatedEntry = "ID: " + id + "\nName: " + newName + "\nStatus: " + newStatus + "\nQuantity: " + newQuantity;
                     newData += updatedEntry + "\n";
                     service.GetStorage().SetHistoryData(service.GetStorage().GetHistoryData() + "Updated: " + newEntries[i] + " → " + updatedEntry + "\n");
@@ -59,16 +66,19 @@ namespace GEMBusinessLogic{
             }
         }
 
-        public bool DeleteEquipment(int id) {
+        public bool DeleteEquipment(int id)
+        {
 
             string equipmentData = service.GetStorage().GetEquipmentData();
             string[] entries = equipmentData.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             string newData = "";
             bool deleted = false;
 
-            foreach (string entry in entries){
+            foreach (string entry in entries)
+            {
 
-                if (entry.Contains("ID: " + id)) {
+                if (entry.Contains("ID: " + id))
+                {
 
                     service.GetStorage().SetHistoryData(service.GetStorage().GetHistoryData() + "Deleted: " + entry + "\n");
                     deleted = true;
@@ -91,14 +101,17 @@ namespace GEMBusinessLogic{
             return deleted;
         }
 
-        public string SearchEquipment(int ID) {
+        public string SearchEquipment(int ID)
+        {
             string[] entries = service.GetStorage().GetEquipmentData().Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             string results = "";
             bool matchFound = false;
 
-            for (int i = 0; i < entries.Length; i++){
+            for (int i = 0; i < entries.Length; i++)
+            {
 
-                if (entries[i].StartsWith("ID: " + ID)) {
+                if (entries[i].StartsWith("ID: " + ID))
+                {
                     matchFound = true;
                     results += entries[i] + "\n" + entries[i + 1] + "\n" + entries[i + 2] + "\n" + entries[i + 3] + "\n";
                     break;
@@ -108,13 +121,15 @@ namespace GEMBusinessLogic{
             return matchFound ? results : "No equipment found with ID: " + ID;
         }
 
-        public string ViewEquipmentList() {
+        public string ViewEquipmentList()
+        {
 
             string data = service.GetStorage().GetEquipmentData();
             return string.IsNullOrWhiteSpace(data) ? "No equipment available." : data;
         }
 
-        public string ViewHistory(){
+        public string ViewHistory()
+        {
 
             string data = service.GetStorage().GetHistoryData();
             return string.IsNullOrWhiteSpace(data) ? "No history available." : data;

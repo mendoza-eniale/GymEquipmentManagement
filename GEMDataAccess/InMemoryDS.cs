@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GEMDataAccess
 {
-    public class InMemoryDS : IGEMDataService
+    public class InMemoryDataService : IGEMDataService
     {
         private string equipmentData = "";
         private string historyData = "";
@@ -15,7 +11,6 @@ namespace GEMDataAccess
         {
             return equipmentData;
         }
-
         public string GetHistoryData()
         {
             return historyData;
@@ -23,17 +18,18 @@ namespace GEMDataAccess
 
         public void SetEquipmentData(string data)
         {
-            equipmentData = data + "\n\n";
+            equipmentData += data + "\n\n";
         }
 
         public void SetHistoryData(string data)
         {
-            historyData = data + "\n";
+            historyData += data + "\n";
         }
 
         public void ReplaceEquipmentData(string newData)
         {
             equipmentData = newData;
         }
+
     }
 }

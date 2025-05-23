@@ -1,5 +1,5 @@
 ﻿
-namespace GEMDataAccess
+namespace GEMCommon
 {
     public class LoginService
     {
@@ -17,5 +17,7 @@ namespace GEMDataAccess
                 return false;
             }
         }
+
+     
     }
 }

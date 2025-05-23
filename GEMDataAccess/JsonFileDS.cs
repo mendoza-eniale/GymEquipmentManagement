@@ -1,55 +1,61 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 
 namespace GEMDataAccess
 {
-    public class JsonFileDS : IGEMDataService
+    public class JsonFileDataService : IGEMDataService
     {
-        private string equipmentFilePath;
-        private string historyFilePath;
+        private readonly string equipmentFile = "equipment.json";
+        private readonly string historyFile = "history.json";
 
-        public JsonFileDS(string equipmentFilePath = "equipment.json", string historyFilePath = "history.json")
+        private List<string> LoadList(string file)
         {
-            this.equipmentFilePath = equipmentFilePath;
-            this.historyFilePath = historyFilePath;
-        }
-
-        public string GetEquipmentData()
-        {
-            if (File.Exists(equipmentFilePath))
+            if (File.Exists(file))
             {
-                return File.ReadAllText(equipmentFilePath);
+                string content = File.ReadAllText(file);
+                List<string> result = JsonSerializer.Deserialize<List<string>>(content);
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return new List<string>();
+                }
             }
             else
             {
-                return "";
+                return new List<string>();
             }
         }
 
-        public string GetHistoryData()
+        private void SaveList(string file, List<string> list)
         {
-            if (File.Exists(historyFilePath))
-            {
-                return File.ReadAllText(historyFilePath);
-            }
-            else
-            {
-                return "";
-            }
+            File.WriteAllText(file, JsonSerializer.Serialize(list, new JsonSerializerOptions { WriteIndented = true }));
         }
+        public string GetEquipmentData() => string.Join("\n\n", LoadList(equipmentFile));
+        public string GetHistoryData() => string.Join("\n", LoadList(historyFile));
 
         public void SetEquipmentData(string data)
         {
-            File.AppendAllText(equipmentFilePath, data);
+            var list = LoadList(equipmentFile);
+            list.Add(data);
+            SaveList(equipmentFile, list);
         }
 
         public void SetHistoryData(string data)
         {
-            File.AppendAllText(historyFilePath, data);
+            var list = LoadList(historyFile);
+            list.Add(data);
+            SaveList(historyFile, list);
         }
 
         public void ReplaceEquipmentData(string newData)
         {
-            File.WriteAllText(equipmentFilePath, newData);
+            var list = newData.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+            SaveList(equipmentFile, new List<string>(list));
         }
     }
 }

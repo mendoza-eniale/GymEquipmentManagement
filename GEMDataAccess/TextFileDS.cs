@@ -1,17 +1,18 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace GEMDataAccess
 {
-    public class TextFileDS : IGEMDataService
+    public class TextFileDataService : IGEMDataService
     {
-        private string equipmentFilePath = "equipment.txt";
-        private string historyFilePath = "history.txt";
+        private readonly string equipmentFile = "equipment.txt";
+        private readonly string historyFile = "history.txt";
 
         public string GetEquipmentData()
         {
-            if (File.Exists(equipmentFilePath))
+            if (File.Exists(equipmentFile))
             {
-                return File.ReadAllText(equipmentFilePath);
+                return File.ReadAllText(equipmentFile);
             }
             else
             {
@@ -21,9 +22,9 @@ namespace GEMDataAccess
 
         public string GetHistoryData()
         {
-            if (File.Exists(historyFilePath))
+            if (File.Exists(historyFile))
             {
-                return File.ReadAllText(historyFilePath);
+                return File.ReadAllText(historyFile);
             }
             else
             {
@@ -33,17 +34,16 @@ namespace GEMDataAccess
 
         public void SetEquipmentData(string data)
         {
-            File.AppendAllText(equipmentFilePath, data + "\n");
+            File.AppendAllText(equipmentFile, data + "\n\n");
         }
-
         public void SetHistoryData(string data)
         {
-            File.AppendAllText(historyFilePath, data + "\n");
+            File.AppendAllText(historyFile, data + "\n");
         }
 
         public void ReplaceEquipmentData(string newData)
         {
-            File.WriteAllText(equipmentFilePath, newData);
+            File.WriteAllText(equipmentFile, newData);
         }
     }
 }

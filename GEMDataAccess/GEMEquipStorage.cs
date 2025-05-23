@@ -1,33 +1,45 @@
-﻿using System;
+﻿using GEMCommon;
 
-namespace GEMDataAccess{
-    public class GEMEquipStorage{
-
-        private GEMDataService dataService = new GEMDataService();
+namespace GEMDataAccess
+{
+    public class GEMEquipStorage
+    {
+        private IGEMDataService dataService;
         private LoginService loginService = new LoginService();
 
-        public string GetEquipmentData(){
+        public GEMEquipStorage(IGEMDataService service)
+        {
+            dataService = service;
+        }
+
+        public string GetEquipmentData()
+        {
             return dataService.GetEquipmentData();
         }
 
-        public string GetHistoryData(){
+        public string GetHistoryData()
+        {
             return dataService.GetHistoryData();
         }
 
-        public void SetEquipmentData(string data){  
+        public void SetEquipmentData(string data)
+        {
             dataService.SetEquipmentData(data);
         }
 
-        public void SetHistoryData(string data) {
+        public void SetHistoryData(string data)
+        {
             dataService.SetHistoryData(data);
         }
 
-        public void ReplaceEquipmentData(string newData) {
+        public void ReplaceEquipmentData(string newData)
+        {
             dataService.ReplaceEquipmentData(newData);
         }
 
-        public bool LogIn(string inputUsername, string inputPassword){
+        public bool LogIn(string inputUsername, string inputPassword)
+        {
             return loginService.LogIn(inputUsername, inputPassword);
         }
     }
-}
+    }

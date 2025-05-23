@@ -1,5 +1,4 @@
 ﻿using GEMDataAccess;
-using System;
 
 namespace GEMBusinessLogic
 {
@@ -9,12 +8,11 @@ namespace GEMBusinessLogic
 
         public Service()
         {
-            storage = new GEMEquipStorage();
+            //storage = new GEMEquipStorage(new InMemoryDataService());
+             storage = new GEMEquipStorage(new TextFileDataService());
+            // storage = new GEMEquipStorage(new JsonFileDataService());
         }
 
-        public GEMEquipStorage GetStorage()
-        {
-            return storage;
-        }
+        public GEMEquipStorage GetStorage() => storage;
     }
 }
