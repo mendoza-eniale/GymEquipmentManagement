@@ -1,18 +1,15 @@
 ﻿using GEMDataAccess;
-
 namespace GEMBusinessLogic
 {
     public class Service
     {
-        private GEMEquipStorage storage;
-
+        private readonly GEMEquipStorage storage;
         public Service()
         {
-            storage = new GEMEquipStorage(new InMemoryDataService());
+            // Initialize with the appropriate data service
             storage = new GEMEquipStorage(new TextFileDataService());
             // storage = new GEMEquipStorage(new JsonFileDataService());
         }
-
         public GEMEquipStorage GetStorage() => storage;
     }
 }

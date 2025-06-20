@@ -8,10 +8,11 @@ namespace GEMDataAccess
 {
     public interface IGEMDataService
     {
-        string GetEquipmentData();
-        string GetHistoryData();
-        void SetEquipmentData(string data);
-        void SetHistoryData(string data);
-        void ReplaceEquipmentData(string newData);
+        public string GetEquipmentData();
+        public string GetHistoryData();
+        public void SetEquipmentData(string data);
+        public void SetHistoryData(string data);
+        public void ReplaceEquipmentData(string newData);
+        // condition na dapaat lahat ng nanditong method makikita sa bl and dl
     }
 }

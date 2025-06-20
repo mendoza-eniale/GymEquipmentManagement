@@ -10,52 +10,152 @@ namespace GEMDataAccess
         private readonly string equipmentFile = "equipment.json";
         private readonly string historyFile = "history.json";
 
-        private List<string> LoadList(string file)
+        public JsonFileDataService()
         {
-            if (File.Exists(file))
+            // Ensure files exist with empty lists when service is created
+            InitializeFiles();
+        }
+
+        private void InitializeFiles()
+        {
+            if (!File.Exists(equipmentFile))
             {
-                string content = File.ReadAllText(file);
-                List<string> result = JsonSerializer.Deserialize<List<string>>(content);
-                if (result != null)
-                {
-                    return result;
-                }
-                else
-                {
-                    return new List<string>();
-                }
+                SaveList(equipmentFile, new List<EquipmentItem>());
             }
-            else
+            if (!File.Exists(historyFile))
             {
+                SaveList(historyFile, new List<string>());
+            }
+        }
+
+        private List<EquipmentItem> LoadEquipmentList()
+        {
+            try
+            {
+                if (File.Exists(equipmentFile))
+                {
+                    string content = File.ReadAllText(equipmentFile);
+                    if (!string.IsNullOrWhiteSpace(content))
+                    {
+                        return JsonSerializer.Deserialize<List<EquipmentItem>>(content) ?? new List<EquipmentItem>();
+                    }
+                }
+                return new List<EquipmentItem>();
+            }
+            catch (Exception ex) when (ex is JsonException || ex is IOException)
+            {
+                Console.WriteLine($"Error loading equipment data: {ex.Message}");
+                return new List<EquipmentItem>();
+            }
+        }
+
+        private List<string> LoadHistoryList()
+        {
+            try
+            {
+                if (File.Exists(historyFile))
+                {
+                    string content = File.ReadAllText(historyFile);
+                    if (!string.IsNullOrWhiteSpace(content))
+                    {
+                        return JsonSerializer.Deserialize<List<string>>(content) ?? new List<string>();
+                    }
+                }
+                return new List<string>();
+            }
+            catch (Exception ex) when (ex is JsonException || ex is IOException)
+            {
+                Console.WriteLine($"Error loading history data: {ex.Message}");
                 return new List<string>();
             }
         }
 
-        private void SaveList(string file, List<string> list)
+        private void SaveList<T>(string file, List<T> list)
         {
-            File.WriteAllText(file, JsonSerializer.Serialize(list, new JsonSerializerOptions { WriteIndented = true }));
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                };
+                string json = JsonSerializer.Serialize(list, options);
+                File.WriteAllText(file, json);
+            }
+            catch (Exception ex) when (ex is JsonException || ex is IOException)
+            {
+                Console.WriteLine($"Error saving to {file}: {ex.Message}");
+                throw;
+            }
         }
-        public string GetEquipmentData() => string.Join("\n\n", LoadList(equipmentFile));
-        public string GetHistoryData() => string.Join("\n", LoadList(historyFile));
 
-        public void SetEquipmentData(string data)
+        public string GetEquipmentData()
         {
-            var list = LoadList(equipmentFile);
-            list.Add(data);
+            var equipmentList = LoadEquipmentList();
+            return string.Join(Environment.NewLine + Environment.NewLine, equipmentList);
+        }
+
+        public string GetHistoryData()
+        {
+            var historyList = LoadHistoryList();
+            return string.Join(Environment.NewLine, historyList);
+        }
+
+        public void SetEquipmentData(EquipmentItem item)
+        {
+            var list = LoadEquipmentList();
+            list.Add(item);
             SaveList(equipmentFile, list);
         }
 
         public void SetHistoryData(string data)
         {
-            var list = LoadList(historyFile);
+            var list = LoadHistoryList();
             list.Add(data);
             SaveList(historyFile, list);
         }
 
+        public void ReplaceEquipmentData(List<EquipmentItem> newData)
+        {
+            if (newData == null)
+            {
+                throw new ArgumentNullException(nameof(newData));
+            }
+            SaveList(equipmentFile, newData);
+        }
+
+        public void DeleteEquipment(int id)
+        {
+            var list = LoadEquipmentList();
+            list.RemoveAll(item => item.Id == id);
+            SaveList(equipmentFile, list);
+        }
+
+        public EquipmentItem SearchEquipment(int id)
+        {
+            var list = LoadEquipmentList();
+            return list.Find(item => item.Id == id);
+        }
+
+        public void SetEquipmentData(string data)
+        {
+        }
+
         public void ReplaceEquipmentData(string newData)
         {
-            var list = newData.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
-            SaveList(equipmentFile, new List<string>(list));
+        }
+    }
+
+    public class EquipmentItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public int Quantity { get; set; }
+
+        public override string ToString()
+        {
+            return $"ID: {Id}\nName: {Name}\nStatus: {Status}\nQuantity: {Quantity}";
         }
     }
 }

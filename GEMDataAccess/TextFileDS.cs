@@ -14,11 +14,10 @@ namespace GEMDataAccess
             {
                 return File.ReadAllText(equipmentFile);
             }
-            else
-            {
+          
                 return "";
             }
-        }
+        
 
         public string GetHistoryData()
         {
@@ -26,11 +25,10 @@ namespace GEMDataAccess
             {
                 return File.ReadAllText(historyFile);
             }
-            else
-            {
+            
                 return "";
             }
-        }
+        
 
         public void SetEquipmentData(string data)
         {
@@ -43,7 +41,7 @@ namespace GEMDataAccess
 
         public void ReplaceEquipmentData(string newData)
         {
-            File.WriteAllText(equipmentFile, newData);
+            File.WriteAllText(equipmentFile,newData);
         }
     }
 }

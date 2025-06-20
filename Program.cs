@@ -9,8 +9,7 @@ namespace GymEquipmentManagement
         static GEMActions actions = new GEMActions();
         static Login login = new Login();
 
-        static void Main()
-        {
+        static void Main(){
 
             bool LoggedIn = false;
 
@@ -23,6 +22,12 @@ namespace GymEquipmentManagement
                 Console.Write("Enter Password: ");
                 string password = Console.ReadLine();
 
+                //if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                //{
+                //    Console.WriteLine("\nUsername and password cannot be empty.\n");
+                //    continue;
+                //}
+
                 LoggedIn = login.LogIn(username, password);
 
                 if (!LoggedIn)
@@ -33,7 +38,7 @@ namespace GymEquipmentManagement
                 {
                     Console.WriteLine("\nLogin successful!\n");
                 }
-            }
+            }        
 
             while (true)
             {
@@ -135,10 +140,9 @@ namespace GymEquipmentManagement
             string newStatus = Console.ReadLine();
 
             string statusLower = newStatus.ToLower();
-            if (statusLower != "working")
+            if (statusLower == "working")
             {
                 newStatus = "Working";
-
             }
             else if (statusLower == "needs repair")
             {
@@ -149,6 +153,7 @@ namespace GymEquipmentManagement
                 Console.WriteLine("Invalid status! Enter 'Working' or 'Needs Repair'.");
                 return;
             }
+
 
             Console.Write("Enter New Quantity: ");
             if (int.TryParse(Console.ReadLine(), out int newQuantity) && newQuantity > 0)

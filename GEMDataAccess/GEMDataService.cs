@@ -7,6 +7,11 @@ namespace GEMDataAccess
         private string equipmentData = "";
         private string historyData = "";
 
+        public GEMDataService()
+        {
+            
+        }
+
         public string GetEquipmentData()
         {
             return equipmentData;
