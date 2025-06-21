@@ -5,28 +5,27 @@ namespace GymEquipmentManagement
 {
     class Program
     {
-
         static GEMActions actions = new GEMActions();
         static Login login = new Login();
 
-        static void Main(){
-
+        static void Main(string[] args)
+        {
             bool LoggedIn = false;
 
             while (!LoggedIn)
             {
                 Console.WriteLine("======== LOG IN ========\n");
                 Console.Write("Enter Username: ");
-                string username = Console.ReadLine();
+                string? username = Console.ReadLine();
 
                 Console.Write("Enter Password: ");
-                string password = Console.ReadLine();
+                string? password = Console.ReadLine();
 
-                //if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-                //{
-                //    Console.WriteLine("\nUsername and password cannot be empty.\n");
-                //    continue;
-                //}
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                {
+                    Console.WriteLine("\nUsername and password cannot be empty.\n");
+                    continue;
+                }
 
                 LoggedIn = login.LogIn(username, password);
 
@@ -38,7 +37,7 @@ namespace GymEquipmentManagement
                 {
                     Console.WriteLine("\nLogin successful!\n");
                 }
-            }        
+            }
 
             while (true)
             {
@@ -52,7 +51,7 @@ namespace GymEquipmentManagement
                 Console.WriteLine("7. Exit");
                 Console.Write("\nSelect an option: ");
 
-                string choice = Console.ReadLine();
+                string? choice = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(choice))
                 {
                     Console.WriteLine("Invalid choice! Please enter a number.");
@@ -61,24 +60,12 @@ namespace GymEquipmentManagement
 
                 switch (choice)
                 {
-                    case "1":
-                        AddEquipment();
-                        break;
-                    case "2":
-                        UpdateEquipment();
-                        break;
-                    case "3":
-                        DeleteEquipment();
-                        break;
-                    case "4":
-                        ViewEquipmentList();
-                        break;
-                    case "5":
-                        ViewHistory();
-                        break;
-                    case "6":
-                        SearchEquipment();
-                        break;
+                    case "1": AddEquipment(); break;
+                    case "2": UpdateEquipment(); break;
+                    case "3": DeleteEquipment(); break;
+                    case "4": ViewEquipmentList(); break;
+                    case "5": ViewHistory(); break;
+                    case "6": SearchEquipment(); break;
                     case "7": return;
                     default:
                         Console.WriteLine("Invalid choice! Try again.");
@@ -89,22 +76,17 @@ namespace GymEquipmentManagement
 
         static void AddEquipment()
         {
-
             Console.Write("Enter Equipment Name: ");
-            string name = Console.ReadLine();
+            string? name = Console.ReadLine();
 
             Console.Write("Enter Status (Working/Needs Repair): ");
-            string status = Console.ReadLine();
+            string? status = Console.ReadLine();
+            string statusLower = status?.ToLower() ?? "";
 
-            string statusLower = status.ToLower();
             if (statusLower == "working")
-            {
                 status = "Working";
-            }
             else if (statusLower == "needs repair")
-            {
                 status = "Needs Repair";
-            }
             else
             {
                 Console.WriteLine("Invalid status! Enter 'Working' or 'Needs Repair'.");
@@ -125,7 +107,6 @@ namespace GymEquipmentManagement
 
         static void UpdateEquipment()
         {
-
             Console.Write("Enter Equipment ID to update: ");
             if (!int.TryParse(Console.ReadLine(), out int id))
             {
@@ -134,26 +115,21 @@ namespace GymEquipmentManagement
             }
 
             Console.Write("Enter New Name: ");
-            string newName = Console.ReadLine();
+            string? newName = Console.ReadLine();
 
             Console.Write("Enter New Status (Working/Needs Repair): ");
-            string newStatus = Console.ReadLine();
+            string? newStatus = Console.ReadLine();
+            string statusLower = newStatus?.ToLower() ?? "";
 
-            string statusLower = newStatus.ToLower();
             if (statusLower == "working")
-            {
                 newStatus = "Working";
-            }
             else if (statusLower == "needs repair")
-            {
                 newStatus = "Needs Repair";
-            }
             else
             {
                 Console.WriteLine("Invalid status! Enter 'Working' or 'Needs Repair'.");
                 return;
             }
-
 
             Console.Write("Enter New Quantity: ");
             if (int.TryParse(Console.ReadLine(), out int newQuantity) && newQuantity > 0)
@@ -165,7 +141,6 @@ namespace GymEquipmentManagement
             {
                 Console.WriteLine("Invalid quantity! Enter a positive number.");
             }
-
         }
 
         static void DeleteEquipment()
@@ -179,19 +154,13 @@ namespace GymEquipmentManagement
 
             bool deleted = actions.DeleteEquipment(id);
             if (deleted)
-            {
                 Console.WriteLine("Equipment deleted successfully!");
-            }
             else
-            {
                 Console.WriteLine("Failed to delete. Equipment ID not found.");
-            }
-
         }
 
         static void SearchEquipment()
         {
-
             Console.Write("Enter Equipment ID to search: ");
             if (!int.TryParse(Console.ReadLine(), out int id))
             {
@@ -199,19 +168,16 @@ namespace GymEquipmentManagement
                 return;
             }
 
-            string result = actions.SearchEquipment(id);
+            string? result = actions.SearchEquipment(id);
             Console.WriteLine("\n===== SEARCH RESULT =====\n");
             Console.WriteLine(result);
         }
 
-
         static void ViewEquipmentList()
         {
-
             Console.WriteLine("\n===== Equipment List =====");
-            string equipmentList = actions.ViewEquipmentList();
+            string? equipmentList = actions.ViewEquipmentList();
             Console.WriteLine(equipmentList);
-
         }
 
         static void ViewHistory()
@@ -219,7 +185,6 @@ namespace GymEquipmentManagement
             Console.WriteLine("\n===== History =====");
             string history = actions.ViewHistory();
             Console.WriteLine(history);
-
         }
     }
 }
