@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿
 using System.Text.Json;
+using GEMCommon;
 
 namespace GEMDataAccess
 {
@@ -12,39 +11,29 @@ namespace GEMDataAccess
 
         public JsonFileDataService()
         {
-            // Ensure files exist with empty lists when service is created
             InitializeFiles();
         }
 
         private void InitializeFiles()
         {
             if (!File.Exists(equipmentFile))
-            {
                 SaveList(equipmentFile, new List<EquipmentItem>());
-            }
+
             if (!File.Exists(historyFile))
-            {
                 SaveList(historyFile, new List<string>());
-            }
         }
 
         private List<EquipmentItem> LoadEquipmentList()
         {
             try
             {
-                if (File.Exists(equipmentFile))
-                {
-                    string content = File.ReadAllText(equipmentFile);
-                    if (!string.IsNullOrWhiteSpace(content))
-                    {
-                        return JsonSerializer.Deserialize<List<EquipmentItem>>(content) ?? new List<EquipmentItem>();
-                    }
-                }
-                return new List<EquipmentItem>();
+                var content = File.ReadAllText(equipmentFile);
+                return string.IsNullOrWhiteSpace(content)
+                    ? new List<EquipmentItem>()
+                    : JsonSerializer.Deserialize<List<EquipmentItem>>(content) ?? new List<EquipmentItem>();
             }
-            catch (Exception ex) when (ex is JsonException || ex is IOException)
+            catch
             {
-                Console.WriteLine($"Error loading equipment data: {ex.Message}");
                 return new List<EquipmentItem>();
             }
         }
@@ -53,56 +42,47 @@ namespace GEMDataAccess
         {
             try
             {
-                if (File.Exists(historyFile))
-                {
-                    string content = File.ReadAllText(historyFile);
-                    if (!string.IsNullOrWhiteSpace(content))
-                    {
-                        return JsonSerializer.Deserialize<List<string>>(content) ?? new List<string>();
-                    }
-                }
-                return new List<string>();
+                var content = File.ReadAllText(historyFile);
+                return string.IsNullOrWhiteSpace(content)
+                    ? new List<string>()
+                    : JsonSerializer.Deserialize<List<string>>(content) ?? new List<string>();
             }
-            catch (Exception ex) when (ex is JsonException || ex is IOException)
+            catch
             {
-                Console.WriteLine($"Error loading history data: {ex.Message}");
                 return new List<string>();
             }
         }
 
         private void SaveList<T>(string file, List<T> list)
         {
-            try
-            {
-                var options = new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-                };
-                string json = JsonSerializer.Serialize(list, options);
-                File.WriteAllText(file, json);
-            }
-            catch (Exception ex) when (ex is JsonException || ex is IOException)
-            {
-                Console.WriteLine($"Error saving to {file}: {ex.Message}");
-                throw;
-            }
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            File.WriteAllText(file, JsonSerializer.Serialize(list, options));
         }
 
         public string GetEquipmentData()
         {
-            var equipmentList = LoadEquipmentList();
-            return string.Join(Environment.NewLine + Environment.NewLine, equipmentList);
+            var list = LoadEquipmentList();
+            return list.Count == 0 ? "" : string.Join("\n\n", list);
         }
 
         public string GetHistoryData()
         {
-            var historyList = LoadHistoryList();
-            return string.Join(Environment.NewLine, historyList);
+            var list = LoadHistoryList();
+            return list.Count == 0 ? "" : string.Join("\n", list);
         }
 
-        public void SetEquipmentData(EquipmentItem item)
+        public void SetEquipmentData(string data)
         {
+            var lines = data.Split('\n');
+            var item = new EquipmentItem();
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("ID: ")) item.Id = int.Parse(line[4..]);
+                else if (line.StartsWith("Name: ")) item.Name = line[6..].Trim();
+                else if (line.StartsWith("Status: ")) item.Status = line[8..].Trim();
+                else if (line.StartsWith("Quantity: ")) item.Quantity = int.Parse(line[10..]);
+            }
+
             var list = LoadEquipmentList();
             list.Add(item);
             SaveList(equipmentFile, list);
@@ -115,47 +95,24 @@ namespace GEMDataAccess
             SaveList(historyFile, list);
         }
 
-        public void ReplaceEquipmentData(List<EquipmentItem> newData)
-        {
-            if (newData == null)
-            {
-                throw new ArgumentNullException(nameof(newData));
-            }
-            SaveList(equipmentFile, newData);
-        }
-
-        public void DeleteEquipment(int id)
-        {
-            var list = LoadEquipmentList();
-            list.RemoveAll(item => item.Id == id);
-            SaveList(equipmentFile, list);
-        }
-
-        public EquipmentItem SearchEquipment(int id)
-        {
-            var list = LoadEquipmentList();
-            return list.Find(item => item.Id == id);
-        }
-
-        public void SetEquipmentData(string data)
-        {
-        }
-
         public void ReplaceEquipmentData(string newData)
         {
-        }
-    }
-
-    public class EquipmentItem
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Status { get; set; }
-        public int Quantity { get; set; }
-
-        public override string ToString()
-        {
-            return $"ID: {Id}\nName: {Name}\nStatus: {Status}\nQuantity: {Quantity}";
+            var entries = newData.Split("\n\n", StringSplitOptions.RemoveEmptyEntries);
+            var newList = new List<EquipmentItem>();
+            foreach (var entry in entries)
+            {
+                var lines = entry.Split('\n');
+                var item = new EquipmentItem();
+                foreach (var line in lines)
+                {
+                    if (line.StartsWith("ID: ")) item.Id = int.Parse(line[4..]);
+                    else if (line.StartsWith("Name: ")) item.Name = line[6..].Trim();
+                    else if (line.StartsWith("Status: ")) item.Status = line[8..].Trim();
+                    else if (line.StartsWith("Quantity: ")) item.Quantity = int.Parse(line[10..]);
+                }
+                newList.Add(item);
+            }
+            SaveList(equipmentFile, newList);
         }
     }
 }

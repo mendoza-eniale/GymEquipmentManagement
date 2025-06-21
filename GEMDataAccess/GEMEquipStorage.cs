@@ -2,6 +2,7 @@
 
 namespace GEMDataAccess
 {
+
     public class GEMEquipStorage
     {
         private IGEMDataService dataService;

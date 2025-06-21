@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 
 namespace GEMDataAccess
 {
@@ -11,6 +11,7 @@ namespace GEMDataAccess
         {
             return equipmentData;
         }
+
         public string GetHistoryData()
         {
             return historyData;
@@ -30,6 +31,6 @@ namespace GEMDataAccess
         {
             equipmentData = newData;
         }
-
     }
 }
+

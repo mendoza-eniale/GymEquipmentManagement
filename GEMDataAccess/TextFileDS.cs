@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿
 
 namespace GEMDataAccess
 {
@@ -10,30 +9,19 @@ namespace GEMDataAccess
 
         public string GetEquipmentData()
         {
-            if (File.Exists(equipmentFile))
-            {
-                return File.ReadAllText(equipmentFile);
-            }
-          
-                return "";
-            }
-        
+            return File.Exists(equipmentFile) ? File.ReadAllText(equipmentFile) : "";
+        }
 
         public string GetHistoryData()
         {
-            if (File.Exists(historyFile))
-            {
-                return File.ReadAllText(historyFile);
-            }
-            
-                return "";
-            }
-        
+            return File.Exists(historyFile) ? File.ReadAllText(historyFile) : "";
+        }
 
         public void SetEquipmentData(string data)
         {
             File.AppendAllText(equipmentFile, data + "\n\n");
         }
+
         public void SetHistoryData(string data)
         {
             File.AppendAllText(historyFile, data + "\n");
@@ -41,7 +29,7 @@ namespace GEMDataAccess
 
         public void ReplaceEquipmentData(string newData)
         {
-            File.WriteAllText(equipmentFile,newData);
+            File.WriteAllText(equipmentFile, newData);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace GEMDataAccess
 {
     public class GEMDataService
@@ -11,7 +10,6 @@ namespace GEMDataAccess
         {
             
         }
-
         public string GetEquipmentData()
         {
             return equipmentData;
