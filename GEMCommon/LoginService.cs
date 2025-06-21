@@ -1,18 +1,33 @@
-﻿namespace GEMCommon
+﻿
+
+namespace GEMCommon
 {
     public class LoginService
     {
-        private string Username { get; } = "admin"; // Use properties for encapsulation
-        private string Password { get; } = "123456"; // Use properties for encapsulation
-        public bool LogIn(string inputUsername, string inputPassword)
+        private string Username = "admin"; 
+        private string Password = "123456";
+       public bool LogIn(string inputUsername, string inputPassword)
         {
             return inputUsername == Username && inputPassword == Password;
         }
     }
-    public class EquipmentItem
+
+    public interface IEquipmentItem
     {
-        public string Name { get; set; }
-        public string Status { get; set; }
+        int Id { get; set; }
+        string Name { get; set; }
+        string Status { get; set; }
+        int Quantity { get; set; }
+    }
+    public class EquipmentItem : IEquipmentItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
         public int Quantity { get; set; }
+        public override string ToString()
+        {
+            return $"ID: {Id}\nName: {Name}\nStatus: {Status}\nQuantity: {Quantity}";
+        }
     }
 }
