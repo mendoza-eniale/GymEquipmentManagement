@@ -1,17 +1,20 @@
-﻿using GEMCommon; // Ensure to include the correct namespace
-using GEMDataAccess;
+﻿
+using GEMCommon;
+
 namespace GEMBusinessLogic
 {
     public class Login
     {
-        private readonly LoginService loginService; // Use LoginService instead of Service
+        private readonly LoginService loginService;
+
         public Login()
         {
-            loginService = new LoginService(); // Initialize LoginService
+            loginService = new LoginService();
         }
+
         public bool LogIn(string username, string password)
         {
-            return loginService.LogIn(username, password); // Call LogIn on LoginService
+            return loginService.LogIn(username, password);
         }
     }
 }

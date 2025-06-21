@@ -1,138 +1,127 @@
-﻿using GEMDataAccess;
-using System;
+﻿
+using GEMCommon;
+
 
 namespace GEMBusinessLogic
 {
-public class GEMActions
-{
-    private int idCounter = 1;
-    private Service service;
-
-    public GEMActions()
+    public class GEMActions
     {
-        service = new Service();
+        private Service service;
+        private int idCounter = 1;
 
-        AddEquipment("Treadmill", "Working", 5);
-        AddEquipment("Dumbbell", "Working", 20);
-        AddEquipment("Bench Press", "Needs Repair", 3);
-        AddEquipment("Stationary Bike", "Working", 4);
-        AddEquipment("Rowing Machine", "Needs Repair", 2);
-        AddEquipment("Pull-up Bar", "Working", 6);
-        AddEquipment("Leg Press", "Needs Repair", 2);
-        AddEquipment("Elliptical Trainer", "Working", 3);
-    }
-
-    public void AddEquipment(string name, string status, int quantity)
-    {
-
-        string entry = "ID: " + idCounter + "\nName: " + name + "\nStatus: " + status + "\nQuantity: " + quantity;
-        service.GetStorage().SetEquipmentData(service.GetStorage().GetEquipmentData() + entry + "\n");
-        service.GetStorage().SetHistoryData(service.GetStorage().GetHistoryData() + "Added: \n" + entry + "\n");
-        idCounter++;
-    }
-
-    public void UpdateEquipment(int id, string newName, string newStatus, int newQuantity)
-    {
-
-        string data = service.GetStorage().GetEquipmentData();
-        string[] newEntries = data.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        string newData = "";
-        bool updated = false;
-
-        for (int i = 0; i < newEntries.Length; i++)
+        public GEMActions()
         {
+            service = new Service();
+        }
 
-            if (newEntries[i].StartsWith("ID: " + id))
+        public void AddEquipment(string name, string status, int quantity)
+        {
+            var item = new EquipmentItem
             {
-                string updatedEntry = "ID: " + id + "\nName: " + newName + "\nStatus: " + newStatus + "\nQuantity: " + newQuantity;
-                newData += updatedEntry + "\n";
-                service.GetStorage().SetHistoryData(service.GetStorage().GetHistoryData() + "Updated: " + newEntries[i] + " → " + updatedEntry + "\n");
-                i += 3;
-                updated = true;
+                Id = idCounter++,
+                Name = name,
+                Status = status,
+                Quantity = quantity
+            };
+
+            service.GetStorage().SetEquipmentData(item.ToString());
+            service.GetStorage().SetHistoryData($"Added: {item}");
+        }
+
+        public void UpdateEquipment(int id, string newName, string newStatus, int newQuantity)
+        {
+            var data = service.GetStorage().GetEquipmentData();
+            var entries = data.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var updatedList = new List<string>();
+            bool updated = false;
+
+            foreach (var entry in entries)
+            {
+                if (entry.StartsWith($"ID: {id}\n"))
+                {
+                    var updatedItem = new EquipmentItem
+                    {
+                        Id = id,
+                        Name = newName,
+                        Status = newStatus,
+                        Quantity = newQuantity
+                    };
+                    updatedList.Add(updatedItem.ToString());
+                    service.GetStorage().SetHistoryData($"Updated: {entry} → {updatedItem}");
+                    updated = true;
+                }
+                else
+                {
+                    updatedList.Add(entry);
+                }
+            }
+
+            if (updated)
+            {
+                service.GetStorage().ReplaceEquipmentData(string.Join("\n\n", updatedList));
             }
             else
             {
-                newData += newEntries[i] + "\n\n";
+                service.GetStorage().SetHistoryData($"Update Failed: Equipment ID {id} not found.");
             }
         }
 
-        if (updated)
+        public bool DeleteEquipment(int id)
         {
-            service.GetStorage().ReplaceEquipmentData(newData);
-        }
-        else
-        {
-            service.GetStorage().SetHistoryData(service.GetStorage().GetHistoryData() + "Update Failed: Equipment ID " + id + " not found.\n");
-        }
-    }
+            var data = service.GetStorage().GetEquipmentData();
+            var entries = data.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var updatedList = new List<string>();
+            bool deleted = false;
 
-    public bool DeleteEquipment(int id)
-    {
-
-        string equipmentData = service.GetStorage().GetEquipmentData();
-        string[] entries = equipmentData.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        string newData = "";
-        bool deleted = false;
-
-        foreach (string entry in entries)
-        {
-
-            if (entry.Contains("ID: " + id))
+            foreach (var entry in entries)
             {
+                if (entry.StartsWith($"ID: {id}\n"))
+                {
+                    service.GetStorage().SetHistoryData($"Deleted: {entry}");
+                    deleted = true;
+                }
+                else
+                {
+                    updatedList.Add(entry);
+                }
+            }
 
-                service.GetStorage().SetHistoryData(service.GetStorage().GetHistoryData() + "Deleted: " + entry + "\n");
-                deleted = true;
+            if (deleted)
+            {
+                service.GetStorage().ReplaceEquipmentData(string.Join("\n\n", updatedList));
             }
             else
             {
-                newData += entry + "\n";
+                service.GetStorage().SetHistoryData($"Delete Failed: Equipment ID {id} not found.");
             }
+
+            return deleted;
         }
 
-        if (deleted)
+        public string SearchEquipment(int id)
         {
-            service.GetStorage().ReplaceEquipmentData(newData);
-        }
-        else
-        {
-            service.GetStorage().SetHistoryData(service.GetStorage().GetHistoryData() + "Delete Failed: Equipment ID " + id + " not found.\n");
-        }
-
-        return deleted;
-    }
-
-    public string SearchEquipment(int ID)
-    {
-        string[] entries = service.GetStorage().GetEquipmentData().Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        string results = "";
-        bool matchFound = false;
-
-        for (int i = 0; i < entries.Length; i++)
-        {
-
-            if (entries[i].StartsWith("ID: " + ID))
+            var data = service.GetStorage().GetEquipmentData();
+            var entries = data.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var entry in entries)
             {
-                matchFound = true;
-                results += entries[i] + "\n" + entries[i + 1] + "\n" + entries[i + 2] + "\n" + entries[i + 3] + "\n";
-                break;
+                if (entry.StartsWith($"ID: {id}\n"))
+                {
+                    return entry;
+                }
             }
+            return $"No equipment found with ID: {id}";
         }
 
-        return matchFound ? results : "No equipment found with ID: " + ID;
+        public string ViewEquipmentList()
+        {
+            var data = service.GetStorage().GetEquipmentData();
+            return string.IsNullOrWhiteSpace(data) ? "No equipment available." : data;
+        }
+
+        public string ViewHistory()
+        {
+            var data = service.GetStorage().GetHistoryData();
+            return string.IsNullOrWhiteSpace(data) ? "No history available." : data;
+        }
     }
-
-    public string ViewEquipmentList()
-    {
-
-        string data = service.GetStorage().GetEquipmentData();
-        return string.IsNullOrWhiteSpace(data) ? "No equipment available." : data;
-    }
-
-    public string ViewHistory()
-    {
-
-        string data = service.GetStorage().GetHistoryData();
-        return string.IsNullOrWhiteSpace(data) ? "No history available." : data;
-    }
-}
 }
