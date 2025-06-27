@@ -1,16 +1,10 @@
-﻿
-
-
-namespace GEMDataAccess
+using GEMCommon;
+public interface IGEMDataService
 {
-    public interface IGEMDataService
-    {
-        string GetEquipmentData();
-        string GetHistoryData();
-        void SetEquipmentData(string data);
-        void SetHistoryData(string data);
-        void ReplaceEquipmentData(string newData);
-    }
+    void SetEquipmentData(EquipmentItem equip);
+    void ReplaceEquipmentData(string newData);
+    string GetEquipmentData();
+    string GetHistoryData();
+    void SetHistoryData(string data);
+    string SearchEquipment(int id);
 }
-
-// condition na dapaat lahat ng nanditong method makikita sa bl and dl

@@ -1,7 +1,5 @@
-﻿
-using GEMBusinessLogic;
-using System.Data;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using GEMBusinessLogic;
+using System;
 
 namespace GymEquipmentManagement
 {
@@ -12,9 +10,9 @@ namespace GymEquipmentManagement
 
         static void Main(string[] args)
         {
-            bool LoggedIn = false;
+            bool loggedIn = false;
 
-            while (!LoggedIn)
+            while (!loggedIn)
             {
                 Console.WriteLine("======== LOG IN ========\n");
                 Console.Write("Enter Username: ");
@@ -29,9 +27,9 @@ namespace GymEquipmentManagement
                     continue;
                 }
 
-                LoggedIn = login.LogIn(username, password);
+                loggedIn = login.LogIn(username, password);
 
-                if (!LoggedIn)
+                if (!loggedIn)
                 {
                     Console.WriteLine("\nInvalid username or password.\n\n");
                 }
@@ -62,20 +60,13 @@ namespace GymEquipmentManagement
 
                 switch (choice)
                 {
-                    case "1": AddEquipment(); 
-                        break;
-                    case "2": UpdateEquipment(); 
-                        break;
-                    case "3": DeleteEquipment(); 
-                        break;
-                    case "4": ViewEquipmentList(); 
-                        break;
-                    case "5": ViewHistory(); 
-                        break;
-                    case "6": SearchEquipment(); 
-                        break;
-                    case "7": 
-                        return;
+                    case "1": AddEquipment(); break;
+                    case "2": UpdateEquipment(); break;
+                    case "3": DeleteEquipment(); break;
+                    case "4": ViewEquipmentList(); break;
+                    case "5": ViewHistory(); break;
+                    case "6": SearchEquipment(); break;
+                    case "7": return;
                     default:
                         Console.WriteLine("Invalid choice! Try again.");
                         break;

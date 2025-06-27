@@ -1,17 +1,25 @@
-﻿
 using GEMCommon;
-
+using GEMDataAccess;
+using System.Collections.Generic;
+using System.Text;
 
 namespace GEMBusinessLogic
 {
     public class GEMActions
     {
-        private Service service;
-        private int idCounter = 1;
+        private readonly GEMEquipStorage storage;
+        private int idCounter;
+
+        public GEMActions(GEMEquipStorage storage)
+        {
+            this.storage = storage ?? throw new ArgumentNullException(nameof(storage));
+            this.idCounter = GetMaxId() + 1;
+        }
 
         public GEMActions()
         {
-            service = new Service();
+            storage = new GEMEquipStorage(new InMemoryDataService());
+            idCounter = GetMaxId() + 1;
         }
 
         public void AddEquipment(string name, string status, int quantity)
@@ -24,13 +32,13 @@ namespace GEMBusinessLogic
                 Quantity = quantity
             };
 
-            service.GetStorage().SetEquipmentData(item.ToString());
-            service.GetStorage().SetHistoryData($"Added: {item}");
+            storage.SetEquipmentData(item);
+            storage.SetHistoryData($"Added: {item}");
         }
 
         public void UpdateEquipment(int id, string newName, string newStatus, int newQuantity)
         {
-            var data = service.GetStorage().GetEquipmentData();
+            var data = storage.GetEquipmentData();
             var entries = data.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
             var updatedList = new List<string>();
             bool updated = false;
@@ -47,7 +55,7 @@ namespace GEMBusinessLogic
                         Quantity = newQuantity
                     };
                     updatedList.Add(updatedItem.ToString());
-                    service.GetStorage().SetHistoryData($"Updated: {entry} → {updatedItem}");
+                    storage.SetHistoryData($"Updated: {entry} → {updatedItem}");
                     updated = true;
                 }
                 else
@@ -58,17 +66,17 @@ namespace GEMBusinessLogic
 
             if (updated)
             {
-                service.GetStorage().ReplaceEquipmentData(string.Join("\n\n", updatedList));
+                storage.ReplaceEquipmentData(string.Join("\n\n", updatedList));
             }
             else
             {
-                service.GetStorage().SetHistoryData($"Update Failed: Equipment ID {id} not found.");
+                storage.SetHistoryData($"Update Failed: Equipment ID {id} not found.");
             }
         }
 
         public bool DeleteEquipment(int id)
         {
-            var data = service.GetStorage().GetEquipmentData();
+            var data = storage.GetEquipmentData();
             var entries = data.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
             var updatedList = new List<string>();
             bool deleted = false;
@@ -77,7 +85,7 @@ namespace GEMBusinessLogic
             {
                 if (entry.StartsWith($"ID: {id}\n"))
                 {
-                    service.GetStorage().SetHistoryData($"Deleted: {entry}");
+                    storage.SetHistoryData($"Deleted: {entry}");
                     deleted = true;
                 }
                 else
@@ -88,11 +96,11 @@ namespace GEMBusinessLogic
 
             if (deleted)
             {
-                service.GetStorage().ReplaceEquipmentData(string.Join("\n\n", updatedList));
+                storage.ReplaceEquipmentData(string.Join("\n\n", updatedList));
             }
             else
             {
-                service.GetStorage().SetHistoryData($"Delete Failed: Equipment ID {id} not found.");
+                storage.SetHistoryData($"Delete Failed: Equipment ID {id} not found.");
             }
 
             return deleted;
@@ -100,28 +108,73 @@ namespace GEMBusinessLogic
 
         public string SearchEquipment(int id)
         {
-            var data = service.GetStorage().GetEquipmentData();
-            var entries = data.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var entry in entries)
+            try
             {
-                if (entry.StartsWith($"ID: {id}\n"))
+                var data = storage.GetEquipmentData();
+                if (string.IsNullOrWhiteSpace(data))
                 {
-                    return entry;
+                    return $"No equipment available in the database.";
                 }
+
+                var entries = data.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var entry in entries)
+                {
+                    var lines = entry.Split('\n');
+                    foreach (var line in lines)
+                    {
+                        if (line.StartsWith("ID: ") && int.TryParse(line.Substring(4), out int currentId) && currentId == id)
+                        {
+                            StringBuilder result = new StringBuilder();
+                            result.AppendLine(entry);
+                            return result.ToString().Trim();
+                        }
+                    }
+                }
+
+                return $"No equipment found with ID: {id}";
             }
-            return $"No equipment found with ID: {id}";
+            catch (Exception ex)
+            {
+                return $"An error occurred while searching for equipment: {ex.Message}";
+            }
         }
+
 
         public string ViewEquipmentList()
         {
-            var data = service.GetStorage().GetEquipmentData();
+            var data = storage.GetEquipmentData();
             return string.IsNullOrWhiteSpace(data) ? "No equipment available." : data;
         }
 
         public string ViewHistory()
         {
-            var data = service.GetStorage().GetHistoryData();
+            var data = storage.GetHistoryData();
             return string.IsNullOrWhiteSpace(data) ? "No history available." : data;
+        }
+
+        private int GetMaxId()
+        {
+            var data = storage.GetEquipmentData();
+            var entries = data.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+            int maxId = 0;
+
+            foreach (var entry in entries)
+            {
+                var lines = entry.Split('\n');
+                foreach (var line in lines)
+                {
+                    if (line.StartsWith("ID: "))
+                    {
+                        if (int.TryParse(line.Substring(4), out int id))
+                        {
+                            if (id > maxId) maxId = id;
+                        }
+                    }
+                }
+            }
+
+            return maxId;
         }
     }
 }

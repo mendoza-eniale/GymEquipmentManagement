@@ -1,3 +1,4 @@
+
 ﻿
 using System.Text.Json;
 using GEMCommon;
@@ -11,10 +12,14 @@ namespace GEMDataAccess
 
         public JsonFileDataService()
         {
-            InitializeFiles();
+            ReadJsonDataFromFile();
         }
 
-        private void InitializeFiles()
+        public bool LogIn(string inputUsername, string inputPassword)
+        {
+            return inputUsername == "admin" && inputPassword == "123456";
+        }
+        private void ReadJsonDataFromFile()
         {
             if (!File.Exists(equipmentFile))
                 SaveList(equipmentFile, new List<EquipmentItem>());
@@ -71,20 +76,10 @@ namespace GEMDataAccess
             return list.Count == 0 ? "" : string.Join("\n", list);
         }
 
-        public void SetEquipmentData(string data)
+        public void SetEquipmentData(EquipmentItem equip)
         {
-            var lines = data.Split('\n');
-            var item = new EquipmentItem();
-            foreach (var line in lines)
-            {
-                if (line.StartsWith("ID: ")) item.Id = int.Parse(line[4..]);
-                else if (line.StartsWith("Name: ")) item.Name = line[6..].Trim();
-                else if (line.StartsWith("Status: ")) item.Status = line[8..].Trim();
-                else if (line.StartsWith("Quantity: ")) item.Quantity = int.Parse(line[10..]);
-            }
-
             var list = LoadEquipmentList();
-            list.Add(item);
+            list.Add(equip);
             SaveList(equipmentFile, list);
         }
 
@@ -93,6 +88,13 @@ namespace GEMDataAccess
             var list = LoadHistoryList();
             list.Add(data);
             SaveList(historyFile, list);
+        }
+
+        public string SearchEquipment(int id)
+        {
+            var list = LoadEquipmentList();
+            var equipment = list.FirstOrDefault(e => e.Id == id);
+            return equipment != null ? equipment.ToString() : $"No equipment found with ID: {id}";
         }
 
         public void ReplaceEquipmentData(string newData)
@@ -106,9 +108,9 @@ namespace GEMDataAccess
                 foreach (var line in lines)
                 {
                     if (line.StartsWith("ID: ")) item.Id = int.Parse(line[4..]);
-                    else if (line.StartsWith("Name: ")) item.Name = line[6..].Trim();
-                    else if (line.StartsWith("Status: ")) item.Status = line[8..].Trim();
-                    else if (line.StartsWith("Quantity: ")) item.Quantity = int.Parse(line[10..]);
+                    else if (line.StartsWith("\nName: ")) item.Name = line[6..].Trim();
+                    else if (line.StartsWith("\nStatus: ")) item.Status = line[8..].Trim();
+                    else if (line.StartsWith("\nQuantity: \n\n")) item.Quantity = int.Parse(line[10..]);
                 }
                 newList.Add(item);
             }

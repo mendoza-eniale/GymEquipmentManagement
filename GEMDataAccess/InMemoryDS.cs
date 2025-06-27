@@ -1,4 +1,4 @@
-﻿
+﻿using GEMCommon;
 
 namespace GEMDataAccess
 {
@@ -17,20 +17,31 @@ namespace GEMDataAccess
             return historyData;
         }
 
-        public void SetEquipmentData(string data)
+        public void SetEquipmentData(EquipmentItem equip)
         {
-            equipmentData += data + "\n\n";
+            equipmentData += equip + "\n\n";
         }
 
         public void SetHistoryData(string data)
         {
             historyData += data + "\n";
         }
-
         public void ReplaceEquipmentData(string newData)
         {
             equipmentData = newData;
         }
+        public string SearchEquipment(int id)
+        {
+            var entries = equipmentData.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var entry in entries)
+            {
+                if (entry.StartsWith($"ID: {id}"))
+                {
+                    return entry;
+                }
+            }
+            return $"No equipment found with ID: {id}";
+        }
+
     }
 }
-

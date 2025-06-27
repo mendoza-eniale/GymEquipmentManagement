@@ -1,38 +1,46 @@
-﻿
-namespace GEMDataAccess
+﻿using GEMCommon;
+using GEMDataAccess;
+using Microsoft.Identity.Client.Extensions.Msal;
+
+public class GEMDataService : IGEMDataService
 {
-    public class GEMDataService
+    private readonly DBDataService dbService = new DBDataService();
+   
+    public string GetEquipmentData()
     {
-        private string equipmentData = "";
-        private string historyData = "";
+        return dbService.GetEquipmentData();
+    }
+    public string GetHistoryData()
+    {
+        return dbService.GetHistoryData();
+    }
 
-        public GEMDataService()
-        {
-            
-        }
-        public string GetEquipmentData()
-        {
-            return equipmentData;
-        }
+    public void SetEquipmentData(EquipmentItem equip)
+    {
+        dbService.SetEquipmentData(equip);
+    }
 
-        public string GetHistoryData()
-        {
-            return historyData;
-        }
+    public void SetHistoryData(string data)
+    {
+        dbService.SetHistoryData(data);
+    }
 
-        public void SetEquipmentData(string data)
+    public void ReplaceEquipmentData(string newData)
+    {
+        dbService.ReplaceEquipmentData(newData);
+    }
+    public string SearchEquipment(int id)
+    {
+        try
         {
-            equipmentData = data + "\n\n";
+            return dbService.SearchEquipment(id);
         }
-
-        public void SetHistoryData(string data)
+        catch (Exception ex)
         {
-            historyData = data + "\n";
-        }
-
-        public void ReplaceEquipmentData(string newData)
-        {
-            equipmentData = newData;
+            throw new Exception($"Failed to search for equipment ID {id}: {ex.Message}", ex);
         }
     }
+
+
+
 }

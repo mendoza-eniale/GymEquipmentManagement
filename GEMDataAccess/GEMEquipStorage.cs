@@ -1,16 +1,15 @@
 ﻿using GEMCommon;
+using GEMDataAccess;
 
 namespace GEMDataAccess
 {
-
     public class GEMEquipStorage
     {
-        private IGEMDataService dataService;
-        private LoginService loginService = new LoginService();
+        private readonly IGEMDataService dataService;
 
         public GEMEquipStorage(IGEMDataService service)
         {
-            dataService = service;
+            dataService = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public string GetEquipmentData()
@@ -23,9 +22,9 @@ namespace GEMDataAccess
             return dataService.GetHistoryData();
         }
 
-        public void SetEquipmentData(string data)
+        public void SetEquipmentData(EquipmentItem equip)
         {
-            dataService.SetEquipmentData(data);
+            dataService.SetEquipmentData(equip);
         }
 
         public void SetHistoryData(string data)
@@ -37,10 +36,5 @@ namespace GEMDataAccess
         {
             dataService.ReplaceEquipmentData(newData);
         }
-
-        public bool LogIn(string inputUsername, string inputPassword)
-        {
-            return loginService.LogIn(inputUsername, inputPassword);
-        }
     }
-    }
+}
