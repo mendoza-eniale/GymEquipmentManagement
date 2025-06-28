@@ -1,0 +1,5 @@
+SELECT TOP (1000) [ID]
+      ,[Name]
+      ,[Quantity]
+      ,[Status]
+  FROM [GymEquipmentManagement].[dbo].[equipmentList]

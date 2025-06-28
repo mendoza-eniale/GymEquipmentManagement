@@ -10,10 +10,6 @@ namespace GEMDataAccess
         private readonly string equipmentFile = "equipment.txt";
         private readonly string historyFile = "history.txt";
 
-        public bool LogIn(string inputUsername, string inputPassword)
-        {
-            return inputUsername == "admin" && inputPassword == "123456";
-        }
         public string GetEquipmentData()
         {
             return File.Exists(equipmentFile) ? File.ReadAllText(equipmentFile) : "\n\n";
