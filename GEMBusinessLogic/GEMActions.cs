@@ -83,7 +83,9 @@ namespace GEMBusinessLogic
 
             foreach (var entry in entries)
             {
-                if (entry.StartsWith($"ID: {id}\n"))
+                var lines = entry.Split('\n');
+                var idLine = lines.FirstOrDefault(l => l.StartsWith("ID: "));
+                if (idLine != null && int.TryParse(idLine.Substring(4), out int entryId) && entryId == id)
                 {
                     storage.SetHistoryData($"Deleted: {entry}");
                     deleted = true;
@@ -105,6 +107,7 @@ namespace GEMBusinessLogic
 
             return deleted;
         }
+
 
         public string SearchEquipment(int id)
         {
