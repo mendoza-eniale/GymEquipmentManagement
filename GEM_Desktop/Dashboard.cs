@@ -26,8 +26,8 @@ namespace GEM_Desktop
         public class EquipmentItem
         {
             public int Id { get; set; }
-            public string Name { get; set; }
-            public string Status { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Status { get; set; } = string.Empty;
             public int Quantity { get; set; }
         }
 
@@ -130,7 +130,9 @@ namespace GEM_Desktop
             var history = new desktopDB.historyRecord
             {
                 Action = "Added",
-                Timestamp = DateTime.Now
+                Timestamp = DateTime.Now,
+                Name = string.Empty,
+                Status = string.Empty
             };
             db.GetHistory().Add(history);
 
@@ -150,9 +152,8 @@ namespace GEM_Desktop
         //history
         private void historyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var historyForm = new history())
+            using (var historyForm = new History())
             {
-
                 historyForm.ShowDialog();
             }
         }
@@ -171,7 +172,7 @@ namespace GEM_Desktop
             {
                 dataGridView1.DataSource = null;
                 //dataGridView1.DataSource = equipmentList;
-            dataGridView1.DataSource = db.GetAll();
+                dataGridView1.DataSource = db.GetAll();
             }
         }
 

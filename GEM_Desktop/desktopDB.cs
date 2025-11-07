@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Configuration;
+using GEMCommon;
 using Microsoft.Data.SqlClient;
 
 
@@ -28,7 +29,7 @@ namespace GEM_Desktop
                     {
                         list.Add(new Dashboard.EquipmentItem
                         {
-                            Id = reader.IsDBNull(0) ? 0 : int.TryParse(reader.GetString(0), out var id) ? id : 0,
+                            Id = reader.IsDBNull(0) ? 0 : (reader.GetFieldType(0) == typeof(int) ? reader.GetInt32(0) : (int.TryParse(reader.GetString(0), out var id) ? id : 0)),
                             Name = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
                             Status = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
                             Quantity = reader.IsDBNull(3) ? 0 : reader.GetInt32(3)
@@ -81,38 +82,38 @@ namespace GEM_Desktop
         }
 
         public List<historyRecord> GetHistory()
-{
-    var list = new List<historyRecord>();
-    using (var conn = new SqlConnection(connectionString))
-    {
-        conn.Open();
-        var cmd = new SqlCommand("SELECT EquipmentId, Action, Name, Status, Quantity, Timestamp FROM EquipmentHistoryForm ORDER BY Timestamp DESC", conn);
-        using (var reader = cmd.ExecuteReader())
         {
-            while (reader.Read())
+            var list = new List<historyRecord>();
+            using (var conn = new SqlConnection(connectionString))
             {
-                list.Add(new historyRecord
+                conn.Open();
+                var cmd = new SqlCommand("SELECT EquipmentId, Action, Name, Status, Quantity, Timestamp FROM EquipmentHistoryForm ORDER BY Timestamp DESC", conn);
+                using (var reader = cmd.ExecuteReader())
                 {
-                    EquipmentId = reader.GetInt32(0),
-                    Action = reader.GetString(1),
-                    Name = reader.GetString(2),
-                    Status = reader.GetString(3),
-                    Quantity = reader.GetInt32(4),
-                    Timestamp = reader.GetDateTime(5)
-                });
+                    while (reader.Read())
+                    {
+                        list.Add(new historyRecord
+                        {
+                            EquipmentId = reader.GetInt32(0),
+                            Action = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
+                            Name = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                            Status = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
+                            Quantity = reader.GetInt32(4),
+                            Timestamp = reader.GetDateTime(5)
+                        });
+                    }
+                }
             }
+            return list;
         }
-    }
-    return list;
-}
 
         public class historyRecord
         {
             public DateTime Timestamp { get; set; }
-            public string Action { get; set; }
+            public string Action { get; set; } = string.Empty;
             public int EquipmentId { get; set; }
-            public string Name { get; set; }
-            public string Status { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Status { get; set; } = string.Empty;
             public int Quantity { get; set; }
         }
     }

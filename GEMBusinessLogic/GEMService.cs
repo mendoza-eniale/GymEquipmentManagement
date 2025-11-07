@@ -1,4 +1,5 @@
-﻿using GEMDataAccess;
+﻿using GEMCommon;
+using GEMDataAccess;
 
 namespace GEMBusinessLogic
 {

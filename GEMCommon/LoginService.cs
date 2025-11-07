@@ -1,6 +1,4 @@
-﻿
-
-namespace GEMCommon
+﻿namespace GEMCommon
 {
     public class LoginService
     {
@@ -14,9 +12,9 @@ namespace GEMCommon
     public class EquipmentItem
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public int Quantity { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         public override string ToString()
         {

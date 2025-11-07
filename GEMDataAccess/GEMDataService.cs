@@ -1,46 +1,46 @@
-﻿using GEMCommon;
-using GEMDataAccess;
-using Microsoft.Identity.Client.Extensions.Msal;
+﻿using System;
+using GEMCommon;
 
-public class GEMDataService : IGEMDataService
+namespace GEMDataAccess
 {
-    private readonly DBDataService dbService = new DBDataService();
-   
-    public string GetEquipmentData()
+    public class GEMDataService : IGEMDataService
     {
-        return dbService.GetEquipmentData();
-    }
-    public string GetHistoryData()
-    {
-        return dbService.GetHistoryData();
-    }
+        private readonly DBDataService dbService = new DBDataService();
 
-    public void SetEquipmentData(EquipmentItem equip)
-    {
-        dbService.SetEquipmentData(equip);
-    }
-
-    public void SetHistoryData(string data)
-    {
-        dbService.SetHistoryData(data);
-    }
-
-    public void ReplaceEquipmentData(string newData)
-    {
-        dbService.ReplaceEquipmentData(newData);
-    }
-    public string SearchEquipment(int id)
-    {
-        try
+        public string GetEquipmentData()
         {
-            return dbService.SearchEquipment(id);
+            return dbService.GetEquipmentData();
         }
-        catch (Exception ex)
+        public string GetHistoryData()
         {
-            throw new Exception($"Failed to search for equipment ID {id}: {ex.Message}", ex);
+            return dbService.GetHistoryData();
+        }
+
+        public void SetEquipmentData(EquipmentItem equip)
+        {
+            dbService.SetEquipmentData(equip);
+        }
+
+        public void SetHistoryData(string data)
+        {
+            dbService.SetHistoryData(data);
+        }
+
+        public void ReplaceEquipmentData(string newData)
+        {
+            dbService.ReplaceEquipmentData(newData);
+        }
+
+        public string SearchEquipment(int id)
+        {
+            try
+            {
+                return dbService.SearchEquipment(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to search for equipment ID {id}: {ex.Message}", ex);
+            }
         }
     }
-
-
-
 }

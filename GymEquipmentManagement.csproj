@@ -1,30 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+		<UseAppHost>false</UseAppHost>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="GEMBusinessLogic\**" />
-    <Compile Remove="GEMCommon\**" />
-    <Compile Remove="GEMDataAccess\**" />
-    <EmbeddedResource Remove="GEMBusinessLogic\**" />
-    <EmbeddedResource Remove="GEMCommon\**" />
-    <EmbeddedResource Remove="GEMDataAccess\**" />
-    <None Remove="GEMBusinessLogic\**" />
-    <None Remove="GEMCommon\**" />
-    <None Remove="GEMDataAccess\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
+		<PackageReference Include="MySql.Data" Version="9.3.0" />
 
-  <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="9.3.0" />
-  </ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10" />
 
-  <ItemGroup>
-    <ProjectReference Include="GEMBusinessLogic\GEMBusinessLogic.csproj" />
-  </ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.10" />
+	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\GEMBusinessLogic\GEMBusinessLogic.csproj" />
+		<ProjectReference Include="..\GEMCommon\GEMCommon.csproj" />
+		<ProjectReference Include="..\GEMDataAccess\GEMDataAccess.csproj" />
+		<ProjectReference Include="GEMBusinessLogic\GEMBusinessLogic.csproj" />
+		<ProjectReference Include="GEMCommon\GEMCommon.csproj" />
+		<ProjectReference Include="GEMDataAccess\GEMDataAccess.csproj" />
+			<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="GEMBusinessLogic\**\*.cs" />
+		<Compile Remove="GEMCommon\**\*.cs" />
+		<Compile Remove="GEMDataAccess\**\*.cs" />
+		<Compile Remove="WebApplication2\**\*.cs" />
+	</ItemGroup>
 </Project>

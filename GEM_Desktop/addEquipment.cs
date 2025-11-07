@@ -14,7 +14,8 @@ namespace GEM_Desktop
 {
     public partial class addEquipment : Form
     {
-        public EquipmentItem NewEquipment { get; private set; }
+        // initialize to avoid CS8618
+        public EquipmentItem NewEquipment { get; private set; } = new EquipmentItem();
 
         public addEquipment()
         {

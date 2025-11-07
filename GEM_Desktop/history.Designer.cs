@@ -1,6 +1,6 @@
 ﻿namespace GEM_Desktop
 {
-    partial class history
+    partial class History
     {
         /// <summary>
         /// Required designer variable.
@@ -40,7 +40,6 @@
             richTextBox1.Size = new Size(341, 272);
             richTextBox1.TabIndex = 0;
             richTextBox1.Text = "";
-            richTextBox1.TextChanged += history_Load;
             // 
             // btnBack
             // 
@@ -54,15 +53,16 @@
             btnBack.UseVisualStyleBackColor = false;
             btnBack.Click += button1_Click;
             // 
-            // history
+            // History
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(365, 335);
             Controls.Add(btnBack);
             Controls.Add(richTextBox1);
-            Name = "history";
+            Name = "History";
             Text = "View History";
+            this.Load += new System.EventHandler(this.History_Load);
             ResumeLayout(false);
         }
 

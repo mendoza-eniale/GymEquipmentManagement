@@ -1,14 +1,21 @@
 ﻿using GEMBusinessLogic;
 using System;
+using System.Text;
+using GEM_Desktop;
 
 namespace GymEquipmentManagement
 {
-    class Program
+    static class Program
     {
+        static GEMBusinessLogic.Login login = new GEMBusinessLogic.Login();
         static GEMActions actions = new GEMActions();
-        static Login login = new Login();
 
         static void Main(string[] args)
+        {
+            RunConsole();
+        }
+
+        public static void RunConsole()
         {
             bool loggedIn = false;
 
@@ -79,6 +86,12 @@ namespace GymEquipmentManagement
             Console.Write("Enter Equipment Name: ");
             string? name = Console.ReadLine();
 
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Console.WriteLine("Invalid name! Name cannot be empty.");
+                return;
+            }
+
             Console.Write("Enter Status (Working/Needs Repair): ");
             string? status = Console.ReadLine();
             string statusLower = status?.ToLower() ?? "";
@@ -116,6 +129,12 @@ namespace GymEquipmentManagement
 
             Console.Write("Enter New Name: ");
             string? newName = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                Console.WriteLine("Invalid name! Name cannot be empty.");
+                return;
+            }
 
             Console.Write("Enter New Status (Working/Needs Repair): ");
             string? newStatus = Console.ReadLine();
@@ -183,9 +202,35 @@ namespace GymEquipmentManagement
         static void ViewHistory()
         {
             Console.WriteLine("\n===== History =====");
-            string history = actions.ViewHistory();
-            string spacedHistory = string.Join("\n\n", history.Split('\n', StringSplitOptions.RemoveEmptyEntries));
-            Console.WriteLine(spacedHistory);
+            var db = new desktopDB();
+            var historyRecords = db.GetHistory();
+
+            if (historyRecords != null && historyRecords.Any())
+            {
+                var sb = new StringBuilder();
+                foreach (var record in historyRecords)
+                {
+                    sb.AppendLine($"{record.Timestamp}: [{record.Action}] ID: {record.EquipmentId}, Name: {record.Name}, Status: {record.Status}, Quantity: {record.Quantity}");
+                }
+                Console.WriteLine(sb.ToString());
+            }
+            else
+            {
+                var equipmentList = db.GetAll();
+                if (equipmentList != null && equipmentList.Any())
+                {
+                    var sb = new StringBuilder();
+                    foreach (var item in equipmentList)
+                    {
+                        sb.AppendLine($"[Added] ID: {item.Id}, Name: {item.Name}, Status: {item.Status}, Quantity: {item.Quantity}");
+                    }
+                    Console.WriteLine(sb.ToString());
+                }
+                else
+                {
+                    Console.WriteLine("No equipment data available.");
+                }
+            }
         }
     }
 }
