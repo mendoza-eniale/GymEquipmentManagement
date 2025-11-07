@@ -1,33 +1,24 @@
-namespace WebApplication2
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using GEMCommon.Contracts;
+
+namespace GymEquipmentManagement.Services
 {
-    public class Program
+    public static class EmailServiceExtensions
     {
-        public static void Main(string[] args)
+        public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
         {
-            var builder = WebApplication.CreateBuilder(args);
-
-            builder.Services.AddControllersWithViews();
-
-            var app = builder.Build();
-
-            if (!app.Environment.IsDevelopment())
+            services.AddSingleton<IEmailService>(sp =>
             {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
+                var smtpServer = configuration["Email:SmtpServer"];
+                var port = int.Parse(configuration["2525"]);
+                var senderEmail = configuration["elainejoymendoza0904@gmail.com"];
+                var password = configuration["d2fb956416cc4b"];
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+                return new EmailService(smtpServer, port, senderEmail, password);
+            });
 
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=YourController}/{action=Index}/{id?}");
-
-            app.Run();
+            return services;
         }
     }
 }
